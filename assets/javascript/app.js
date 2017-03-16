@@ -20,53 +20,48 @@ $(document).ready(function() {
 // APP STATE
 //=========== 
 
-var appState = {
-  phase: "initialize",
-  userInput: null,
-  emergencyLevel: null
+  var appState = {
+    phase: "initialize",
+    userInput: null,
+    emergencyLevel: null
 
-};
+  };
 
 //===================
 // EVENT MANAGEMENT
 //==================
 
-$('.chat-submit').on('click', function() {
-  event.preventDefault();
-  appState.userInput = $('.chat-input').val().trim();
-  // Fix this: 
-  appState.emergencyLevel = $('.chat-emergency-level').val();
+  $('.chat-submit').on('click', function() {
+    event.preventDefault();
+    appState.userInput = $('.chat-input').val().trim();
+    // Fix this: 
+    appState.emergencyLevel = $('.chat-emergency-level').val();
 
-  console.log(userInput);
-  console.log(emergencyLevel);
+    console.log(userInput);
+    console.log(emergencyLevel);
+  });
 
 
 // ==================
 // READ FROM FIREBASE
 // ==================
 
-function getMessagesFromFirebase() {
-  database.ref().limitToLast(10).on('child_added', function(childSnapshot) {
-    console.log(childSnapshot);
-  }
+  function getMessagesFromFirebase() {
+    database.ref().limitToLast(10).on('child_added', function(childSnapshot) {
+      console.log(childSnapshot);
+    }
 
-}
+  }
 
 //======================
 // SEND/SAVE TO FIREBASE
 //======================
 
-function storeMessageOnFirebase() {
+  function storeMessageOnFirebase() {
 
 
-}
-
-
-});
-
-
-
-
+  }
 
 
 });
+
