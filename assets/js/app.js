@@ -22,8 +22,7 @@ $(document).ready(function() {
 
   var appState = {
     phase: "initialize",
-    userInput: null,
-    emergencyLevel: null
+    userName: "Caryn"
 
   };
 
@@ -33,12 +32,18 @@ $(document).ready(function() {
 
   $('.chat-submit').on('click', function() {
     event.preventDefault();
-    appState.userInput = $('.chat-input').val().trim();
+    var userInput = $('.chat-input').val().trim();
     // Fix this: 
-    appState.emergencyLevel = $('.chat-emergency-level').val();
+    var emergencyLevel = $('.chat-emergency-level').val();
+    var messageObject = {
+      text: userInput,
+      name: appState.userName
+    };
 
-    console.log(userInput);
-    console.log(emergencyLevel);
+    storeMessageOnFirebase(messageObject);
+    // reset form input to show placeholder
+    $('.chat-input').val("");
+
   });
 
 
@@ -47,9 +52,9 @@ $(document).ready(function() {
 // ==================
 
   function getMessagesFromFirebase() {
-    database.ref().limitToLast(10).on('child_added', function(childSnapshot) {
+    database.ref('messages').limitToLast(10).on('child_added', function(childSnapshot) {
       console.log(childSnapshot.val());
-      displayMessages(childSnapshot);
+      displayMessages(childSnapshot); // display 1 message 
     });
 
   }
@@ -58,9 +63,8 @@ $(document).ready(function() {
 // SEND/SAVE TO FIREBASE
 //======================
 
-  function storeMessageOnFirebase() {
-
-
+  function storeMessageOnFirebase(messageObject) {
+    database.ref('messages').push(messageObject);
   }
 
 
@@ -68,24 +72,21 @@ $(document).ready(function() {
 // BROWSER/DISPLAY
 //======================
   
-  function displayMessages(messageObject) {
+  function displayMessages(singleMessage) {
     var chatDiv = $('.chat-history');
     console.log('display messages');
 
-    Object.keys(messageObject.val()).forEach(function(key,index) {
-      var singleMessage = messageObject.val()[key];
-      
-      var newName = $('<h4>');
-      newName.html(singleMessage.name);
-      newName.addClass('chat-message-name');
-      chatDiv.append(newName);
+    var singleMessage = singleMessage.val();
+    
+    var newName = $('<h4>');
+    newName.html(singleMessage.name);
+    newName.addClass('chat-message-name');
+    chatDiv.append(newName);
 
-      var newText = $('<p>');
-      newText.html(singleMessage.text);
-      newText.addClass('chat-message-text');
-      chatDiv.append(newText);
-
-      });
+    var newText = $('<p>');
+    newText.html(singleMessage.text);
+    newText.addClass('chat-message-text');
+    chatDiv.append(newText);
 
   }
 
