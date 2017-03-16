@@ -1,0 +1,6 @@
+{
+  "projects": {
+    "default": "medical-chat",
+    "casey": "medical-chat"
+  }
+}
