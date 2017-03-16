@@ -48,8 +48,9 @@ $(document).ready(function() {
 
   function getMessagesFromFirebase() {
     database.ref().limitToLast(10).on('child_added', function(childSnapshot) {
-      console.log(childSnapshot);
-    }
+      console.log(childSnapshot.val());
+      displayMessages(childSnapshot);
+    });
 
   }
 
@@ -61,6 +62,39 @@ $(document).ready(function() {
 
 
   }
+
+
+//======================
+// BROWSER/DISPLAY
+//======================
+  
+  function displayMessages(messageObject) {
+    var chatDiv = $('.chat-history');
+    console.log('display messages');
+
+    Object.keys(messageObject.val()).forEach(function(key,index) {
+      var singleMessage = messageObject.val()[key];
+      
+      var newName = $('<h4>');
+      newName.html(singleMessage.name);
+      newName.addClass('chat-message-name');
+      chatDiv.append(newName);
+
+      var newText = $('<p>');
+      newText.html(singleMessage.text);
+      newText.addClass('chat-message-text');
+      chatDiv.append(newText);
+
+      });
+
+  }
+
+
+
+
+//=======================
+
+  getMessagesFromFirebase();
 
 
 });
