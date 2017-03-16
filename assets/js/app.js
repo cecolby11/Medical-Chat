@@ -21,6 +21,7 @@ $(document).ready(function() {
 
   function googleSignInPopup() {
     firebase.auth().signInWithPopup(provider).then(function(result) {
+      $('.sign-in').html('Sign Out');
       // This gives you a Google Access Token. You can use it to access the Google API.
       var token = result.credential.accessToken;
       // The signed-in user info.
@@ -50,12 +51,7 @@ $(document).ready(function() {
     if(auth.currentUser)  {
       return true;
     } else {
-      var data = {
-        message: 'You must sign-in first',
-        timeout: 2000
-      };
-      this.signInSnackbar.MaterialSnackbar.showSnackbar(data);
-      return false;
+      //TODO
     }
   }
 
@@ -108,13 +104,15 @@ function resetAppState() {
 
   });
 
-  $('#sign-in').on('click', function() {
-    googleSignInPopup();
+  $('.sign-in').on('click', function() {
+    if(checkSignedIn()){
+      googleSignOut();
+      $('.sign-in').html('Sign In');
+    } else {
+      googleSignInPopup();
+    }
   });
 
-  $('#sign-out').on('click', function() {
-    googleSignOut();
-  })
 
 
 // ==================
