@@ -46,7 +46,8 @@ $('.chat-submit').on('click', function() {
 // ==================
 
 function getMessagesFromFirebase() {
-  database.ref().limitToLast(10).on('child_added'
+  database.ref().limitToLast(10).on('child_added', function(childSnapshot) {
+    console.log(childSnapshot);
   }
 
 }
