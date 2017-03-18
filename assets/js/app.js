@@ -71,56 +71,40 @@ $(document).ready(function() {
 // APP STATE
 //=========== 
 
-var appState;
-function resetAppState() {
-  return {
-    phase: 'initialize'
+  var appState;
+  function resetAppState() {
+    return {
+      phase: 'initialize'
+    }
   }
-}
 
 
 //===================
 // EVENT MANAGEMENT
 //==================
 
+
+  function gatherLangs() {
+    database.ref('/users').on('child_added', function(snapshot) {
+      if (auth.currentUser.displayName === snapshot.val().name) {
+        userLang = snapshot.val().lang;
+      }
+      if ('Casey Colby' === snapshot.val().name) {
+        target = snapshot.val().lang;
+      }
+    });
+  }
+
   $('.chat-submit').on('click', function() {
     event.preventDefault();
     if(checkSignedIn()){
-
-
       var userInput = $('.chat-input').val().trim();
       let userLang = '';
       let target = '';
-       
-      database.ref('/users').on('child_added', function(snapshot) {
-        console.log('this works.');
-        if (auth.currentUser.displayName === snapshot.val().name) {
-          userLang = snapshot.val().lang;
-          console.log(userLang);
-        }
-        if ('Casey Colby' === snapshot.val().name) {
-          target = snapshot.val().lang;
-          console.log(target);
-        }
-      });
-       
-      console.log(translate('en', 'de', userInput));
-      console.log(translation);
+      gatherLangs();
+      target = 'de';
 
-      // Fix this: 
-      var emergencyLevel = $('.chat-emergency-level').val();
-      var timestamp = moment().format();
-      var userName = auth.currentUser.displayName;
-      var messageObject = {
-        sender: userName,
-        original: userInput,
-        translation: '',
-        timestamp: timestamp
-      };
-      
-      storeMessageOnFirebase(messageObject);
-      // reset form input to show placeholder
-      $('.chat-input').val("");
+      translate(userLang, target, userInput);
     } else {
       console.log('error not signed in');
     }
@@ -194,24 +178,32 @@ function resetAppState() {
 // TRANSLATE API
 //==========================
 
-let translation;
-function translate(source = 'en', target = 'en', message) {
-  let queryURL = `https://translation.googleapis.com/language/translate/v2?key=${API_KEY}&q=${message}&source=${source}&target=${target}`;
+function translate(source = 'en', target = 'en', originalText) {
+  let queryURL = `https://translation.googleapis.com/language/translate/v2?key=${API_KEY}&q=${originalText}&source=${source}&target=${target}`;
 
-  let translatedText;
   $.ajax({
     url: queryURL,
     method: "GET"
   }).done(function(res) { 
     translatedText = res.data.translations[0].translatedText;
-    translation = translatedText;
-    console.log(translation);
+    handleTranslateResponse(translatedText, originalText);
   });
 }
 
-function handleTranslateResponse(translatedText) {
-  console.log(translatedText);
-  return translatedText;
+function handleTranslateResponse(translatedText, originalText) {
+  var emergencyLevel = $('.chat-emergency-level').val();
+  var timestamp = moment().format();
+  var userName = auth.currentUser.displayName;
+  var messageObject = {
+    sender: userName,
+    original: originalText,
+    translation: translatedText,
+    timestamp: timestamp
+  };
+  
+  storeMessageOnFirebase(messageObject);
+  // reset form input to show placeholder
+  $('.chat-input').val("");
 }
 
 //=================
