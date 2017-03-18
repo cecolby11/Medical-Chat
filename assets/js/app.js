@@ -19,6 +19,9 @@ $(document).ready(function() {
   var auth = firebase.auth();
   var storage = firebase.storage();
 
+  // save API key for translate API
+  const API_KEY = 'AIzaSyD5phUVsdXQDXdnAQs2QJ9CpwiksKQS1WM';
+
   function googleSignInPopup() {
     firebase.auth().signInWithPopup(provider).then(function(result) {
       $('.sign-in').html('Sign Out');
@@ -84,14 +87,34 @@ function resetAppState() {
     event.preventDefault();
     if(checkSignedIn()){
 
+
       var userInput = $('.chat-input').val().trim();
+      let userLang = '';
+      let target = '';
+       
+      database.ref('/users').on('child_added', function(snapshot) {
+        console.log('this works.');
+        if (auth.currentUser.displayName === snapshot.val().name) {
+          userLang = snapshot.val().lang;
+          console.log(userLang);
+        }
+        if ('Casey Colby' === snapshot.val().name) {
+          target = snapshot.val().lang;
+          console.log(target);
+        }
+      });
+       
+      console.log(translate('en', 'de', userInput));
+      console.log(translation);
+
       // Fix this: 
       var emergencyLevel = $('.chat-emergency-level').val();
       var timestamp = moment().format();
       var userName = auth.currentUser.displayName;
       var messageObject = {
-        text: userInput,
-        name: userName,
+        sender: userName,
+        original: userInput,
+        translation: '',
         timestamp: timestamp
       };
       
@@ -167,8 +190,29 @@ function resetAppState() {
     chatDiv.append(newText);
   }
 
+//==========================
+// TRANSLATE API
+//==========================
 
+let translation;
+function translate(source = 'en', target = 'en', message) {
+  let queryURL = `https://translation.googleapis.com/language/translate/v2?key=${API_KEY}&q=${message}&source=${source}&target=${target}`;
 
+  let translatedText;
+  $.ajax({
+    url: queryURL,
+    method: "GET"
+  }).done(function(res) { 
+    translatedText = res.data.translations[0].translatedText;
+    translation = translatedText;
+    console.log(translation);
+  });
+}
+
+function handleTranslateResponse(translatedText) {
+  console.log(translatedText);
+  return translatedText;
+}
 
 //=================
 // INITIALIZE APP

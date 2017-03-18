@@ -24,17 +24,17 @@
     }
   },
   "users": {
-    "willie": {
-      "lang": "de",
-      "uid": "1"
+    "uid1": {
+      "name": "Wilfried Barth",
+      "lang": "de"
     },
-    "casey": {
-      "lang": "en",
-      "uid": "2"
+    "uid2": {
+      "name": "Casey Colby",
+      "lang": "en"
     },
-    "caryn": {
-      "lang": "fr",
-      "uid": "3"
+    "uid3": {
+      "name": "Caryn Carter",
+      "lang": "fr"
     }
   }
 }
