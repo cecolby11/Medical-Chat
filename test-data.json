@@ -1,0 +1,40 @@
+{
+  "conversations": {
+    "c1": {
+      "name1": "willie",
+      "name2": "casey",
+      "ckey": "1",
+      "messages": {
+        "m1": {
+          "sender": "willie",
+          "original": "Hallo. Ich bin krank!",
+          "translation": "Hello. I am sick!" 
+        },
+        "m2": {
+          "sender": "casey",
+          "original": "Sorry to hear that.",
+          "translation": "Tut mir leid das zu hoeren."
+        },
+        "m3": {
+          "sender": "willie",
+          "original": "Hilf mir!",
+          "translation": "Help me!"
+        }
+      }
+    }
+  },
+  "users": {
+    "willie": {
+      "lang": "de",
+      "uid": "1"
+    },
+    "casey": {
+      "lang": "en",
+      "uid": "2"
+    },
+    "caryn": {
+      "lang": "fr",
+      "uid": "3"
+    }
+  }
+}

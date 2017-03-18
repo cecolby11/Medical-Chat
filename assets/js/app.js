@@ -118,10 +118,13 @@ function resetAppState() {
 // ==================
 // READ FROM FIREBASE
 // ==================
+  // hardcode cid
+  let cid = "c1";
 
   function getMessagesFromFirebase() {
-    database.ref('messages').limitToLast(10).on('child_added', function(childSnapshot) {
-      displayMessages(childSnapshot); // display 1 message 
+    database.ref(`conversations/${cid}/messages`).limitToLast(10).on('child_added', function(childSnapshot) {
+      //displayMessages(childSnapshot); // display 1 message 
+      console.log(auth.currentUser.displayName);
     });
 
   }
@@ -131,7 +134,7 @@ function resetAppState() {
 //======================
 
   function storeMessageOnFirebase(messageObject) {
-    database.ref('messages').push(messageObject);
+    database.ref(`conversations/${cid}/messages`).push(messageObject);
   }
 
 
@@ -140,6 +143,7 @@ function resetAppState() {
 //======================
   
   function displayMessages(singleMessage) {
+    /*
     var chatDiv = $('.chat-history');
     console.log('display messages');
 
@@ -154,6 +158,7 @@ function resetAppState() {
     newText.html(singleMessage.text);
     newText.addClass('chat-message-text');
     chatDiv.append(newText);
+    */
 
   }
 
