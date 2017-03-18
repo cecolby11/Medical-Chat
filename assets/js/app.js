@@ -123,10 +123,14 @@ function resetAppState() {
 
   function getMessagesFromFirebase() {
     database.ref(`conversations/${cid}/messages`).limitToLast(10).on('child_added', function(childSnapshot) {
-      //displayMessages(childSnapshot); // display 1 message 
-      console.log(auth.currentUser.displayName);
+      let isMessageSender = checkSenderRole(childSnapshot);
+      displayMessage(childSnapshot, isMessageSender); // display 1 message 
     });
 
+  }
+
+  function checkSenderRole(childSnapshot) {
+    return childSnapshot.val().sender === auth.currentUser.displayName;
   }
 
 //======================
@@ -142,24 +146,25 @@ function resetAppState() {
 // BROWSER/DISPLAY
 //======================
   
-  function displayMessages(singleMessage) {
-    /*
+  function displayMessage(singleMessage, isMessageSender = true) {
+
     var chatDiv = $('.chat-history');
-    console.log('display messages');
 
     var singleMessage = singleMessage.val();
     
-    var newName = $('<h4>');
-    newName.html(singleMessage.name);
-    newName.addClass('chat-message-name');
-    chatDiv.append(newName);
+    var sender = $('<h4>');
+    sender.html(singleMessage.sender);
+    sender.addClass('chat-message-name');
+    chatDiv.append(sender);
 
     var newText = $('<p>');
-    newText.html(singleMessage.text);
+    if (isMessageSender) {
+      newText.html(singleMessage.original);
+    } else {
+      newText.html(singleMessage.translation);
+    }
     newText.addClass('chat-message-text');
     chatDiv.append(newText);
-    */
-
   }
 
 
