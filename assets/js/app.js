@@ -170,10 +170,33 @@ $(document).ready(function() {
   }
 
   function getUsersFromFirebase () {
-    database.ref('/users').on('child_changed', function (childSnapshot){
-      console.log(childSnapshot.val());
+    database.ref('/users').on('child_added', function (childSnapshot){
+      if (childSnapshot.val().online === true && childSnapshot.val().uid !== auth.currentUser.uid) {
+        displayUser(childSnapshot);
+
+      }
+      
 
     });
+
+  }
+
+  function watchUsersFromFirebase () {
+    database.ref('/users').on("child_changed", function (childSnapshot){
+      if (childSnapshot.val().online === true ) {
+
+        displayUser(childSnapshot); 
+      } else if (childSnapshot.val().online === false) {
+        removeUser(childSnapshot); 
+      }
+
+    });
+  }
+
+
+  function removeUser (userSnapshot) {
+    var uid = userSnapshot.val().uid; 
+    $("[data-uid=" + uid + "]").remove();
 
   }
 //======================
@@ -188,6 +211,14 @@ $(document).ready(function() {
 //======================
 // BROWSER/DISPLAY
 //======================
+
+function displayUser (userSnapshot) {
+    console.log(userSnapshot.val());
+    var listItem = $("<li>");
+    listItem.html(userSnapshot.val().name);
+    listItem.attr("data-uid", userSnapshot.val().uid); 
+    $('.users-list').append(listItem); 
+}
   
   function displayMessage(singleMessage, isMessageSender = true) {
 
@@ -249,6 +280,7 @@ function initializeApp() {
   appState = resetAppState();
   getMessagesFromFirebase(); 
   getUsersFromFirebase(); 
+  watchUsersFromFirebase();
 }
 
 initializeApp();
