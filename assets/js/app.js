@@ -29,6 +29,11 @@ $(document).ready(function() {
       var token = result.credential.accessToken;
       // The signed-in user info.
       var user = result.user;
+      var name = user.displayName;
+      var uid = user.uid; 
+    
+      logInUserInDatabase(name, uid); 
+
       // ...
     }).catch(function(error) {
       // Handle Errors here.
@@ -43,6 +48,9 @@ $(document).ready(function() {
   }
 
   function googleSignOut() {
+    var userId = auth.currentUser.uid;
+    logOutUserInDatabase (userId); 
+
     firebase.auth().signOut().then(function() {
       // Sign-out successful.
     }).catch(function(error) {
@@ -67,6 +75,27 @@ $(document).ready(function() {
     }
   });
 
+  function logInUserInDatabase (name, uid) {
+    var updates = {
+      name: name,
+      uid: uid,
+      online: true
+    };
+
+
+   database.ref('/users/' + uid).update(updates); 
+  }
+
+  function logOutUserInDatabase (uid) {
+    var updates = {
+      online: false
+
+    };
+    console.log(uid);
+
+    database.ref('/users/' + uid).update(updates); 
+
+  }
 //===========
 // APP STATE
 //=========== 
@@ -140,6 +169,13 @@ $(document).ready(function() {
     return childSnapshot.val().sender === auth.currentUser.displayName;
   }
 
+  function getUsersFromFirebase () {
+    database.ref('/users').on('child_changed', function (childSnapshot){
+      console.log(childSnapshot.val());
+
+    });
+
+  }
 //======================
 // SEND/SAVE TO FIREBASE
 //======================
@@ -212,10 +248,10 @@ function handleTranslateResponse(translatedText, originalText) {
 function initializeApp() {
   appState = resetAppState();
   getMessagesFromFirebase(); 
+  getUsersFromFirebase(); 
 }
 
 initializeApp();
-
 
 });
 
