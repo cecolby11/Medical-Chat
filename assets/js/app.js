@@ -250,8 +250,8 @@ function displayUser (userSnapshot) {
     database.ref('/users/' + chatUserId).update({
       cId: cId
     });
-    if (currentUserId || chatUserId) {
-      $(".users-list").hide(); 
+    // if (currentUserId || chatUserId) {
+    //   $(".users-list").hide(); 
     }
   }
   
