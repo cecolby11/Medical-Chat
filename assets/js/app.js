@@ -78,7 +78,6 @@ $(document).ready(function() {
   function logInUserInDatabase (name, uid) {
     var updates = {
       name: name,
-      uid: uid,
       online: true
     };
 
@@ -169,9 +168,11 @@ $(document).ready(function() {
     return childSnapshot.val().sender === auth.currentUser.displayName;
   }
 
-  function getUsersFromFirebase () {
-    database.ref('/users').on('child_added', function (childSnapshot){
-      if (childSnapshot.val().online === true && childSnapshot.val().uid !== auth.currentUser.uid) {
+  function getUsersFromFirebase () { 
+    database.ref('/users').on('child_added', function (childSnapshot, childKey){
+      console.log(childSnapshot.val());
+      console.log(childSnapshot.key);
+      if (childSnapshot.val().online === true && childSnapshot.key !== auth.currentUser.uid) {
         displayUser(childSnapshot);
 
       }
@@ -183,10 +184,10 @@ $(document).ready(function() {
 
   function watchUsersFromFirebase () {
     database.ref('/users').on("child_changed", function (childSnapshot){
-      if (childSnapshot.val().online === true ) {
+      if (childSnapshot.val().online === true && childSnapshot.key !== auth.currentUser.uid) {
 
         displayUser(childSnapshot); 
-      } else if (childSnapshot.val().online === false) {
+      } else if (childSnapshot.val().online === false ) {
         removeUser(childSnapshot); 
       }
 
@@ -194,11 +195,6 @@ $(document).ready(function() {
   }
 
 
-  function removeUser (userSnapshot) {
-    var uid = userSnapshot.val().uid; 
-    $("[data-uid=" + uid + "]").remove();
-
-  }
 //======================
 // SEND/SAVE TO FIREBASE
 //======================
@@ -216,9 +212,48 @@ function displayUser (userSnapshot) {
     console.log(userSnapshot.val());
     var listItem = $("<li>");
     listItem.html(userSnapshot.val().name);
-    listItem.attr("data-uid", userSnapshot.val().uid); 
+    listItem.addClass("chat-user");
+    listItem.attr("data-uid", userSnapshot.key); 
     $('.users-list').append(listItem); 
 }
+
+
+  function removeUser (userSnapshot) {
+    var uid = userSnapshot.key; 
+    $("[data-uid=" + uid + "]").remove();
+
+  }
+
+  $(".users-list").on("click", ".chat-user", function () {
+    var chatUserId = $(this).attr("data-uid");
+    startChat(chatUserId); 
+  });
+  
+  function startChat(chatUserId){
+    createConversation(chatUserId);
+  }
+
+  function createConversation (chatUserId) {
+    var cId; 
+    var currentUserId = auth.currentUser.uid; 
+    database.ref('/conversations').push({
+      userOneId:currentUserId,
+      userTwoId:chatUserId,
+      messages:{}
+    }).once('value', function (snapshot){
+      cId = snapshot.key; 
+    });
+    console.log(cId);
+    database.ref('/users/' + currentUserId).update({
+      cId: cId
+    });
+    database.ref('/users/' + chatUserId).update({
+      cId: cId
+    });
+    if (currentUserId || chatUserId) {
+      $(".users-list").hide(); 
+    }
+  }
   
   function displayMessage(singleMessage, isMessageSender = true) {
 
