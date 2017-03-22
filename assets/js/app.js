@@ -38,6 +38,10 @@ $(document).ready(function() {
       // identify user by id & name throughout the app
       var name = user.displayName;
       var uid = user.uid; 
+
+      getMessagesFromFirebase(); 
+      getUsersFromFirebase(); 
+      watchUsersFromFirebase();
       
       logInUserInDatabase(name, uid); 
     }).catch(function(error) {
