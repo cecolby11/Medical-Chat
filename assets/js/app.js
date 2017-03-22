@@ -116,7 +116,7 @@ $(document).ready(function() {
           </div>
         </div>
       </div>`);
-    newModal.modal('show');
+    newModal.modal({'show': true, 'backdrop': 'static'}); // static: user can't click background to close modal
   }
 
   /**
