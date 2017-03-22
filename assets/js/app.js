@@ -91,6 +91,12 @@ $(document).ready(function() {
       $('.sign-out').removeClass('hidden')
       $('.sign-out').html('Sign Out');
       $('.sign-in-modal').modal('hide');
+
+      $('.chat-history').empty();
+      $('.users-list').empty();
+      getMessagesFromFirebase();
+      getUsersFromFirebase();
+      watchUsersFromFirebase();
     } else {
       // No user is signed in.
       // console.log('no user');
@@ -444,9 +450,9 @@ $(document).ready(function() {
 //=================
   function initializeApp() {
     appState = resetAppState();
-    getMessagesFromFirebase(); 
-    getUsersFromFirebase(); 
-    watchUsersFromFirebase();
+    // getMessagesFromFirebase(); 
+    // getUsersFromFirebase(); 
+    // watchUsersFromFirebase();
   }
 
   initializeApp();
