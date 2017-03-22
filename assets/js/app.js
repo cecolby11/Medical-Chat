@@ -83,7 +83,6 @@
       // if signed in: display user info  
       var userName = user.displayName;
       var profilePicUrl = user.photoURL;
-      console.log(user);
       $('.curr-user-name').html(userName);
       $('.curr-user-photo').html(`<img src=${profilePicUrl}></img>`);
       //$('.sign-out').removeClass('hidden')
@@ -340,13 +339,14 @@
     * @param {object} userSnapshot - snapshot from firebase user's listener (keys: name, id)
   */
   function displayUser (userSnapshot) {
-      console.log(userSnapshot.val());
       let userName = userSnapshot.val().name;
       let userID = userSnapshot.key; 
+      let conversationID = userSnapshot.val().cId;
       let numUnreadMessages = 5;
       let user = `
         <a class="collection-item" href="#"
-          data-uid="${userID}">
+          data-uid="${userID}"
+          data-cid="${conversationID}">
           ${userName}
           <span class="new badge">
             ${numUnreadMessages}
@@ -373,23 +373,32 @@
   */  
   function displayMessage(singleMessage, isMessageSender = true) {
 
-    var chatDiv = $('.chat-history');
+    var chatMessages = $('.chat-messages');
 
-    var singleMessage = singleMessage.val();
+    var chatMessageContent = singleMessage.val();
+    console.log(chatMessageContent.original);
     
-    var sender = $('<h4>');
-    sender.html(singleMessage.sender);
-    sender.addClass('chat-message-name');
-    chatDiv.append(sender);
-
-    var newText = $('<p>');
+    let messageText;
     if (isMessageSender) {
-      newText.html(singleMessage.original);
+      messageText = chatMessageContent.original;
     } else {
-      newText.html(singleMessage.translation);
+      messageText = chatMessageContent.translation;
     }
-    newText.addClass('chat-message-text');
-    chatDiv.append(newText);
+
+    let messageTimestamp = chatMessageContent.timestamp;
+
+    let chatMessage = `
+      <li class="chat-message collection-item">
+        <div class="chat-message-body chip">
+          <img src="http://placehold.it/50x50/ff0000">
+          ${messageText}
+        </div>
+        <div class="chat-message-timestamp chip">
+          ${messageTimestamp}
+        </div>
+
+    `;
+    chatMessages.append(chatMessage);
   }
 
 //==========================
