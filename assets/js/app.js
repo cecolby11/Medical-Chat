@@ -1,6 +1,3 @@
-$(document).ready(function() {
-
-//================
 // API SETUP
 //================
   // save API key for google translate API
@@ -86,8 +83,8 @@ $(document).ready(function() {
       // if signed in: display user info  
       var userName = user.displayName;
       var profilePicUrl = user.photoURL;
-      $('.curr-user-photo').html('<img src="' + profilePicUrl + '">');
-      $('.curr-user-name').html('<h4>'+userName+'</h4>');
+      $('.curr-user-photo').attr('src', profilePicUrl);
+      $('.curr-user-name').html(userName);
       $('.sign-out').removeClass('hidden')
       $('.sign-out').html('Sign Out');
       $('.sign-in-modal').modal('hide');
@@ -102,21 +99,9 @@ $(document).ready(function() {
   });
 
   function initializeSignInModal() {
-    var newModal = $(
-      `<div class='modal modal-dialog modal-lg fade sign-in-modal' role='dialog'>
-        <div class='modal-content'>
-          <div class='modal-header'>
-            <h3>'Welcome to the Medical Translation Chat!'</h3>
-          </div>
-          <div class='modal-body'>
-            <p>Please Sign In!</p>
-          </div>
-          <div class='modal-footer'>
-            <button type="button" class="sign-in close">Sign In</button>
-          </div>
-        </div>
-      </div>`);
-    newModal.modal({'show': true, 'backdrop': 'static'}); // static: user can't click background to close modal
+    var signInModal = $('#sign-in-modal');
+    signInModal.modal('open');
+    //signIn.modal({'show': true, 'backdrop': 'static'}); // static: user can't click background to close modal
   }
 
   /**
@@ -449,6 +434,7 @@ $(document).ready(function() {
     watchUsersFromFirebase();
   }
 
+$(document).ready(function() {
+  $('select').material_select();
   initializeApp();
 });
-

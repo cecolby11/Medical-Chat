@@ -1,42 +1,14 @@
 [debug] ----------------------------------------------------------------------
-[debug] Command:      /usr/local/Cellar/node/7.4.0/bin/node /usr/local/bin/firebase serve
+[debug] Command:      /home/wilfriedbarth/.nvm/versions/node/v7.7.3/bin/node /home/wilfriedbarth/.nvm/versions/node/v7.7.3/bin/firebase serve
 [debug] CLI Version:  3.5.0
-[debug] Platform:     darwin
-[debug] Node Version: v7.4.0
-[debug] Time:         Mon Mar 20 2017 19:44:28 GMT-0500 (CDT)
+[debug] Platform:     linux
+[debug] Node Version: v7.7.3
+[debug] Time:         Wed Mar 22 2017 15:07:10 GMT-0500 (CDT)
 [debug] ----------------------------------------------------------------------
 [debug] 
 [info] Starting Firebase development server...
 [info] 
-[info] Project Directory: /Users/caseycolby/git/sandbox/Medical-Chat
-[info] Public Directory: ./
-[info] 
-[info] Server listening at: http://localhost:5000
-[debug] ----------------------------------------------------------------------
-[debug] Command:      /usr/local/Cellar/node/7.4.0/bin/node /usr/local/bin/firebase serve
-[debug] CLI Version:  3.5.0
-[debug] Platform:     darwin
-[debug] Node Version: v7.4.0
-[debug] Time:         Tue Mar 21 2017 19:44:15 GMT-0500 (CDT)
-[debug] ----------------------------------------------------------------------
-[debug] 
-[info] Starting Firebase development server...
-[info] 
-[info] Project Directory: /Users/caseycolby/git/sandbox/Medical-Chat
-[info] Public Directory: ./
-[info] 
-[info] Server listening at: http://localhost:5000
-[debug] ----------------------------------------------------------------------
-[debug] Command:      /usr/local/Cellar/node/7.4.0/bin/node /usr/local/bin/firebase serve
-[debug] CLI Version:  3.5.0
-[debug] Platform:     darwin
-[debug] Node Version: v7.4.0
-[debug] Time:         Wed Mar 22 2017 10:49:36 GMT-0500 (CDT)
-[debug] ----------------------------------------------------------------------
-[debug] 
-[info] Starting Firebase development server...
-[info] 
-[info] Project Directory: /Users/caseycolby/git/sandbox/Medical-Chat
+[info] Project Directory: /home/wilfriedbarth/Programming/NU-CODING-BOOTCAMP/projects/Medical-Chat
 [info] Public Directory: ./
 [info] 
 [info] Server listening at: http://localhost:5000
