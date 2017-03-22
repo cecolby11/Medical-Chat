@@ -30,7 +30,7 @@ $(document).ready(function() {
   function googleSignInPopup() {
     firebase.auth().signInWithPopup(provider).then(function(result) {
       // update button text
-      $('.sign-in').html('Sign Out');
+      $('.sign-out').html('Sign Out');
       // This gives you a Google Access Token. You can use it to access the Google API.
       var token = result.credential.accessToken;
       // The signed-in user info.
@@ -88,14 +88,15 @@ $(document).ready(function() {
       var profilePicUrl = user.photoURL;
       $('.curr-user-photo').html('<img src="' + profilePicUrl + '">');
       $('.curr-user-name').html('<h4>'+userName+'</h4>');
-      $('.sign-in').html('Sign Out');
+      $('.sign-out').removeClass('hidden')
+      $('.sign-out').html('Sign Out');
       $('.sign-in-modal').modal('hide');
     } else {
       // No user is signed in.
       // console.log('no user');
       $('.curr-user-name').html('');
       $('.curr-user-photo').html('');
-      $('.sign-in').html('Sign In');
+      $('.sign-out').addClass('hidden');
       initializeSignInModal();
     }
   });
@@ -206,18 +207,21 @@ $(document).ready(function() {
   });
 
   /**
-    * listener - if the sign-in/out button is clicked, check if a user is signed in or not 
+    * listeners - if the sign-in/out button is clicked, check if a user is signed in or not 
     * if so: call sign out and change the button text to 'sign in'
     * else: call sign in prompt (change button text to 'sign out' in that function once they've signed in)
   */
-  $(document).on('click', '.sign-in', function() {
+  $(document).on('click', '.sign-out', function() {
     if(checkSignedIn()){
       googleSignOut();
-      $('.sign-in').html('Sign In');
-    } else {
-      googleSignInPopup();
+      $('.sign-out').addClass('hidden');
     }
   });
+  $(document).on('click', '.sign-in', function() {
+    if(!checkSignedIn()){
+      googleSignInPopup();
+    }
+  })
 
   /**
     * listener - if a user clicks a user name in the online-user's dropdown

@@ -7,10 +7,19 @@
     <link rel="stylesheet" type="text/css" href="assets/css/style.css">
   </head>
   <body>
-    <header></header>
+    <header>
+      <div class="auth">
+        <div id="sign-in-status"></div>
+        <div class="account-details">
+          <div class="curr-user-photo"></div>
+          <div class="curr-user-name"></div>
+        <div>
+        <button class="sign-out"></button>
+      </div>
+    </header>
     <main>
       <div class="container">
-        <div class="row">
+        <!-- <div class="row">
           <div class="auth">
             <div id="sign-in-status"></div>
             <div class="account-details">
@@ -19,18 +28,20 @@
             <div>
             <button class="sign-in">Sign In</button>
           </div>
-        </div>
+        </div> -->
 
         <div class="row">
           <div class="col-md-offset-3 col-md-6">
             <div class="chatbox panel panel-default">
               <div class="panel-heading">
                 <div class="panel-title">
-                  MEDICAL CHAT APP
+                  Message History
                 </div>
               </div>
               <div class="chat-history panel-body">
-                <div class="chat-message">Message History...</div>
+                <div class="chat-message">
+                  <!-- messages/chat will appear here -->
+                </div>
               </div>
               <div class="panel-footer">
                 <textarea class="chat-input" placeholder="Put your message here"></textarea>
