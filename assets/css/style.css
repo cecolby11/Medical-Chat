@@ -43,11 +43,17 @@ body {
   color: #4274e0;
 }
 
-.modal-lg{
-  height: 400px;
-  color: #4274e0;
+.modal {
+  position: absolute;
+  top: 10%;
+}
+.modal-content{
+  height: 200px;
 }
 .modal button {
-  color: purple;
   opacity: 0.8;
+  color: purple;
+}
+.modal-footer {
+  border: none;
 }
