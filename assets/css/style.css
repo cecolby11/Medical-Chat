@@ -1,0 +1,41 @@
+.chatbox {
+
+}
+.chat-history {  
+
+}
+.chat-message {
+
+}
+.chat-input {
+  width: 500px;
+}
+.chat-submit {
+
+}
+.chat-emergency-level {
+
+}
+
+.account-details{
+  padding: 20px;
+}
+.curr-user-name {
+  display: inline-block;
+  width: auto;
+  color: #4274e0;
+}
+.curr-user-photo {
+  float: left;
+  margin-right: 10px;
+  overflow: auto;
+
+}
+.curr-user-photo img {
+  height: 40px;
+  width: 40px;
+  border-radius: 50%;
+}
+.sign-in {
+  color: #4274e0;
+}

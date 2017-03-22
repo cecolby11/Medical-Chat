@@ -77,15 +77,24 @@ $(document).ready(function() {
   }
 
   /**
-    * listener for a user signing in or out of the app. 
+    * listener for a user's sign-in state
+    * used to persist user's login information on the page even when page refreshed 
     * @param {object} user - a snapshot of the auth current user. 
   */
   firebase.auth().onAuthStateChanged(function(user) {
     if (user) {
-      
+      // if signed in: display user info  
+      var userName = user.displayName;
+      var profilePicUrl = user.photoURL;
+      $('.curr-user-photo').html('<img src="' + profilePicUrl + '">');
+      $('.curr-user-name').html('<h4>'+userName+'</h4>');
+      $('.sign-in').html('Sign Out');
     } else {
       // No user is signed in.
-      console.log('no user');
+      // console.log('no user');
+      $('.curr-user-name').html('');
+      $('.curr-user-photo').html('');
+      $('.sign-in').html('Sign In');
     }
   });
 
@@ -307,7 +316,7 @@ $(document).ready(function() {
     });
     // if (currentUserId || chatUserId) {
     //   $(".users-list").hide(); 
-    }
+    // }
   }
 
 //======================
