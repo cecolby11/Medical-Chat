@@ -89,14 +89,34 @@ $(document).ready(function() {
       $('.curr-user-photo').html('<img src="' + profilePicUrl + '">');
       $('.curr-user-name').html('<h4>'+userName+'</h4>');
       $('.sign-in').html('Sign Out');
+      $('.sign-in-modal').modal('hide');
     } else {
       // No user is signed in.
       // console.log('no user');
       $('.curr-user-name').html('');
       $('.curr-user-photo').html('');
       $('.sign-in').html('Sign In');
+      initializeSignInModal();
     }
   });
+
+  function initializeSignInModal() {
+    var newModal = $(
+      `<div class='modal modal-dialog modal-lg fade sign-in-modal' role='dialog'>
+        <div class='modal-content'>
+          <div class='modal-header'>
+            <h3>'Welcome to the Medical Translation Chat!'</h3>
+          </div>
+          <div class='modal-body'>
+            <p>Please Sign In!</p>
+          </div>
+          <div class='modal-footer'>
+            <button type="button" class="sign-in close">Sign In</button>
+          </div>
+        </div>
+      </div>`);
+    newModal.modal('show');
+  }
 
   /**
     * This function uses firebase .update method to save user information (object) to the firebase database upon login
@@ -190,7 +210,7 @@ $(document).ready(function() {
     * if so: call sign out and change the button text to 'sign in'
     * else: call sign in prompt (change button text to 'sign out' in that function once they've signed in)
   */
-  $('.sign-in').on('click', function() {
+  $(document).on('click', '.sign-in', function() {
     if(checkSignedIn()){
       googleSignOut();
       $('.sign-in').html('Sign In');
