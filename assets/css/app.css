@@ -4,6 +4,20 @@ body {
   min-height: 100vh;
   flex-direction: column; }
 
+.curr-user-name {
+  display: inline-block;
+  width: auto;
+  color: purple; }
+
+.curr-user-photo {
+  padding: 11px;
+  overflow: auto; }
+
+.curr-user-photo img {
+  height: 40px;
+  width: 40px;
+  border-radius: 50%; }
+
 main {
   flex: 1 0 auto; }
 
@@ -22,27 +36,6 @@ main {
 
 .chat-input {
   width: 500px; }
-
-.account-details {
-  padding: 20px; }
-
-.curr-user-name {
-  display: inline-block;
-  width: auto;
-  color: purple; }
-
-.curr-user-photo {
-  float: left;
-  margin-right: 10px;
-  overflow: auto; }
-
-.curr-user-photo img {
-  height: 40px;
-  width: 40px;
-  border-radius: 50%; }
-
-.sign-out {
-  color: purple; }
 
 .modal {
   position: absolute;

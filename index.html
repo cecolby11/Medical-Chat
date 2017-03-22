@@ -4,8 +4,7 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link href="http://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
-    <link type="text/css" rel="stylesheet" href="assets/css/materialize.css"  media="screen,projection">
-    <link type="text/css" rel="stylesheet" href="assets/css/materialize.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.98.1/css/materialize.min.css">
     <link type="text/css" rel="stylesheet" href="assets/css/app.css">
   </head>
   <body>
@@ -15,7 +14,9 @@
           <div class="nav-wrapper">
             <a href="#" class="brand-logo center">Medical Chat App</a>
             <ul id="nav-mobile" class="right hide-on-med-and-down">
-              <li><a class="waves-effect waves-light btn user-status">Sign-In</a></li>
+              <li class="curr-user-photo"></li>
+              <!--<li><h6 class="curr-user-name"></h6></li>-->
+              <li><a class="waves-effect waves-light btn curr-user-status">Sign-In</a></li>
             </ul>
           </div>
         </nav>                                     
@@ -34,20 +35,19 @@
       <div class="container">
         <div class="row">
           <div class="col m3">
-            <div class="collection with-header">
+            <div class="users-list collection with-header">
               <div class="collection-header"><h4>Users</h4></div>
-              <a class="collection-item" href="#">First User<span class="new badge">4</span></a>
-              <a class="collection-item" href="#">Second User<span class="new badge">1</span></a>
-              <a class="collection-item" href="#">Third User<span class="new badge">2</span></a>
             </div>
           </div>
           <div class="col m6">
-            <ul class="chatbox collection with-header">
+            <ul class="chat-messages collection with-header">
               <li class="collection-header"><h4>Conversation</h4></li>
-              <li class="collection-item">
+              <li class="chat-message collection-item">
                 <div class="chip">
                   <img src="http://placehold.it/50x50/ff0000">
                   I'm sick! Can you help me?
+                </div>
+                <div class="chat-message-timestamp">
                 </div>
               </li>
               <li class="collection-item">
@@ -135,9 +135,9 @@
       </div>
     </footer>
     <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
-    <script type="text/javascript" src="https://www.gstatic.com/firebasejs/3.7.1/firebase.js"></script>
     <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.17.1/moment.min.js"></script>
-    <script type="text/javascript" src="assets/js/bin/materialize.min.js"></script>
+    <script type="text/javascript" src="https://www.gstatic.com/firebasejs/3.7.1/firebase.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.98.1/js/materialize.min.js"></script>
     <script type="text/javascript" src="assets/js/app.js"></script>
   </body>
 </html>

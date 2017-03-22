@@ -27,7 +27,7 @@
   function googleSignInPopup() {
     firebase.auth().signInWithPopup(provider).then(function(result) {
       // update button text
-      $('.sign-out').html('Sign Out');
+      $('.curr-user-status').html('Sign Out');
       // This gives you a Google Access Token. You can use it to access the Google API.
       var token = result.credential.accessToken;
       // The signed-in user info.
@@ -83,24 +83,26 @@
       // if signed in: display user info  
       var userName = user.displayName;
       var profilePicUrl = user.photoURL;
-      $('.curr-user-photo').attr('src', profilePicUrl);
+      console.log(user);
       $('.curr-user-name').html(userName);
-      $('.sign-out').removeClass('hidden')
-      $('.sign-out').html('Sign Out');
-      $('.sign-in-modal').modal('hide');
+      $('.curr-user-photo').html(`<img src=${profilePicUrl}></img>`);
+      //$('.sign-out').removeClass('hidden')
+      $('.curr-user-status').html('Sign Out');
+      //$('.sign-in-modal').modal('hide');
     } else {
       // No user is signed in.
       // console.log('no user');
       $('.curr-user-name').html('');
       $('.curr-user-photo').html('');
-      $('.sign-out').addClass('hidden');
-      initializeSignInModal();
+      $('.curr-user-status').html('Sign In');
+      //$('.sign-out').addClass('hidden');
+      //initializeSignInModal();
     }
   });
 
   function initializeSignInModal() {
-    var signInModal = $('#sign-in-modal');
-    signInModal.modal('open');
+    //var signInModal = $('#sign-in-modal');
+    //signInModal.modal('open');
     //signIn.modal({'show': true, 'backdrop': 'static'}); // static: user can't click background to close modal
   }
 
@@ -196,13 +198,14 @@
     * if so: call sign out and change the button text to 'sign in'
     * else: call sign in prompt (change button text to 'sign out' in that function once they've signed in)
   */
-  $(document).on('click', '.sign-out', function() {
+  $(document).on('click', '.curr-user-status', function() {
+    
     if(checkSignedIn()){
       googleSignOut();
-      $('.sign-out').addClass('hidden');
+     // $('.sign-out').addClass('hidden');
     }
   });
-  $(document).on('click', '.sign-in', function() {
+  $(document).on('click', '.curr-user-status', function() {
     if(!checkSignedIn()){
       googleSignInPopup();
     }
@@ -338,11 +341,19 @@
   */
   function displayUser (userSnapshot) {
       console.log(userSnapshot.val());
-      var listItem = $("<li>");
-      listItem.html(userSnapshot.val().name);
-      listItem.addClass("chat-user");
-      listItem.attr("data-uid", userSnapshot.key); 
-      $('.users-list').append(listItem); 
+      let userName = userSnapshot.val().name;
+      let userID = userSnapshot.key; 
+      let numUnreadMessages = 5;
+      let user = `
+        <a class="collection-item" href="#"
+          data-uid="${userID}">
+          ${userName}
+          <span class="new badge">
+            ${numUnreadMessages}
+          </span>
+        </a>
+      `;
+      $('.users-list').append(user); 
   }
 
   /**
@@ -424,17 +435,24 @@
     $('.chat-input').val("");
   }
 
+//=======================
+// INITIALIZE MATERIALIZE
+//=======================
+
+function initializeMaterialize() {
+  $('select').material_select();
+}
 //=================
 // INITIALIZE APP
 //=================
-  function initializeApp() {
-    appState = resetAppState();
-    getMessagesFromFirebase(); 
-    getUsersFromFirebase(); 
-    watchUsersFromFirebase();
-  }
+function initializeApp() {
+  initializeMaterialize();
+  appState = resetAppState();
+  getMessagesFromFirebase(); 
+  getUsersFromFirebase(); 
+  watchUsersFromFirebase();
+}
 
 $(document).ready(function() {
-  $('select').material_select();
   initializeApp();
 });
