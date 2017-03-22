@@ -88,6 +88,17 @@
       //$('.sign-out').removeClass('hidden')
       $('.curr-user-status').html('Sign Out');
       //$('.sign-in-modal').modal('hide');
+      /*
+      $('.sign-out').removeClass('hidden')
+      $('.sign-out').html('Sign Out');
+      $('.sign-in-modal').modal('hide');
+      */
+
+      $('.chat-messages').empty();
+      $('.users-list').empty();
+      getMessagesFromFirebase();
+      getUsersFromFirebase();
+      watchUsersFromFirebase();
     } else {
       // No user is signed in.
       // console.log('no user');
@@ -457,9 +468,9 @@ function initializeMaterialize() {
 function initializeApp() {
   initializeMaterialize();
   appState = resetAppState();
-  getMessagesFromFirebase(); 
-  getUsersFromFirebase(); 
-  watchUsersFromFirebase();
+  // getMessagesFromFirebase(); 
+  // getUsersFromFirebase(); 
+  // watchUsersFromFirebase();
 }
 
 $(document).ready(function() {
