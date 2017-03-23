@@ -94,8 +94,8 @@
       $('.sign-in-modal').modal('hide');
       */
 
-      $('.chat-messages').empty();
-      $('.users-list').empty();
+      $('.chat-messages chat-message').empty();
+      $('.users-list chat-user').empty();
       getMessagesFromFirebase();
       getUsersFromFirebase();
       watchUsersFromFirebase();
@@ -152,11 +152,11 @@
   /**
     * app state would used more as app is built out further -- for now, most of the state changes are linked to firebase auth state 
   */
-  var appState;
+  let appState; 
   function resetAppState() {
     return {
-      phase: 'initialize'
-    }
+      cId: ''
+    };
   }
 
 
@@ -228,24 +228,26 @@
   */
   $(".users-list").on("click", ".chat-user", function () {
     var chatUserId = $(this).attr("data-uid");
-    startChat(chatUserId); 
+    $(".chat-messages .chat-message").remove();
+    fetchConversation(chatUserId); 
   });
 
 // ==================
 // READ FROM FIREBASE
 // ==================
-  // hardcode cid
-  // TODO: get the cId in user's cId property in database and set it to the global cid
-  let cid = "c1";
 
   /**
     * This function uses on('child_added') listener to: 
     * get the last 10 messages in the current conversation from firebase and as new messages are added, refresh/get the most recent 10 messages
   */
   function getMessagesFromFirebase() {
-    database.ref(`conversations/${cid}/messages`).limitToLast(10).on('child_added', function(childSnapshot) { // single message snapshot
-      let isMessageSender = checkSenderRole(childSnapshot); 
-      displayMessage(childSnapshot, isMessageSender); // display 1 message 
+    let currUserId = auth.currentUser.uid;
+    database.ref(`/users/${currUserId}/cId/`).on('value', function(snapshot) {
+      let cId = snapshot.val();
+      database.ref(`/conversations/${cId}/messages`).limitToLast(10).on('child_added', function(childSnapshot) { // single message snapshot
+        let isMessageSender = checkSenderRole(childSnapshot); 
+        displayMessage(childSnapshot, isMessageSender); // display 1 message 
+      });
     });
   }
 
@@ -293,7 +295,12 @@
     * @param {object} messageObject - a single message object to add (keys: sender, original, translated, timestamp)
   */
   function storeMessageOnFirebase(messageObject) {
-    database.ref(`conversations/${cid}/messages`).push(messageObject);
+    let currUserId = auth.currentUser.uid;
+    let cId; 
+    database.ref(`/users/${currUserId}/cId/`).once('value', function(snapshot) {
+      cId = snapshot.val();
+    });
+    database.ref(`conversations/${cId}/messages`).push(messageObject);
   }
 
   
@@ -306,21 +313,40 @@
       * between the current user and the second user (with chatUserID)
     * if so, pull it up. if not, create a new one
   */
-  function startChat(chatUserId){
-    createConversation(chatUserId);
-  }
 
+  function fetchConversation(chatUserId) {
+    let currUserId = auth.currentUser.uid;
+
+    database.ref('/conversations').once('value', function(snapshot) {
+      let conversations = snapshot.val();
+      let conversationFound = false;
+      Object.keys(conversations).forEach(function(key, i) {
+        let userOneId = conversations[key].userOneId;
+        let userTwoId = conversations[key].userTwoId;
+        if ((currUserId === userOneId && chatUserId === userTwoId) ||
+          (currUserId === userTwoId && chatUserId === userOneId)) {
+            database.ref('/users/' + currUserId).update({
+              cId: key
+            });
+          conversationFound = true;
+        } 
+      });
+      if (!conversationFound) {
+        createConversation(chatUserId);
+      }
+    });
+  }
   /**
     * this function establishes a new conversation between two users
     * @param {string} chatUserId - the second user's uid (second user selected in dropdown)
   */
-  function createConversation (chatUserId) {
+  function createConversation(chatUserId) {
     var cId; 
     // get current user's ID (user1)
     var currentUserId = auth.currentUser.uid; 
 
     // create a new conversation in the database's conversations node 
-    database.ref('/conversations').push({
+    database.ref('/conversations/').push({
       userOneId:currentUserId, 
       userTwoId:chatUserId, 
       messages:{}
@@ -328,12 +354,8 @@
       // get the key of the new conversation created by firebase and store it in var cId 
       cId = snapshot.key; 
     });
-    console.log(cId);
     // store that as current cId in user1/user2 in database
     database.ref('/users/' + currentUserId).update({
-      cId: cId
-    });
-    database.ref('/users/' + chatUserId).update({
       cId: cId
     });
     // if (currentUserId || chatUserId) {
@@ -355,9 +377,8 @@
       let conversationID = userSnapshot.val().cId;
       let numUnreadMessages = 5;
       let user = `
-        <a class="collection-item" href="#"
-          data-uid="${userID}"
-          data-cid="${conversationID}">
+        <a class="chat-user collection-item" href="#"
+          data-uid="${userID}">
           ${userName}
           <span class="new badge">
             ${numUnreadMessages}
@@ -387,7 +408,6 @@
     var chatMessages = $('.chat-messages');
 
     var chatMessageContent = singleMessage.val();
-    console.log(chatMessageContent.original);
     
     let messageText;
     if (isMessageSender) {
