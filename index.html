@@ -18,7 +18,7 @@
             <ul id="nav-mobile" class="right hide-on-med-and-down">
               <li class="curr-user-photo"></li>
               <!--<li><h6 class="curr-user-name"></h6></li>-->
-              <li><a class="waves-effect waves-light btn curr-user-status">Sign-In</a></li>
+              <li><a class="waves-effect waves-light btn sign-out">Sign-Out</a></li>
             </ul>
           </div>
         </nav>                                     
@@ -31,7 +31,7 @@
           <p>Please sign in!</p>
         </div>
         <div class="modal-footer">
-          <a href="#" class="modal-action modal-close waves-effect waves-green btn-flat">Sign In</a>
+          <a href="#" class="modal-action waves-effect waves-green btn-flat sign-in">Sign In</a>
         </div>
       </div>
       <div class="container">
@@ -130,6 +130,11 @@
     <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.17.1/moment.min.js"></script>
     <script type="text/javascript" src="https://www.gstatic.com/firebasejs/3.7.1/firebase.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.98.1/js/materialize.min.js"></script>
+    <script type="text/javascript">
+    // initialize materialize BEFORE it's called in app.js (particularly in order to display the modal on page load if logged out)
+      $('select').material_select();
+      $('.modal').modal({dismissible:false});
+    </script>
     <script type="text/javascript" src="assets/js/app.js"></script>
   </body>
 </html>

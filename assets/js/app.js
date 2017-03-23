@@ -28,7 +28,7 @@
   function googleSignInPopup() {
     firebase.auth().signInWithPopup(provider).then(function(result) {
       // update button text
-      $('.curr-user-status').html('Sign Out');
+      $('.sign-out').html('Sign Out');
       // This gives you a Google Access Token. You can use it to access the Google API.
       var token = result.credential.accessToken;
       // The signed-in user info.
@@ -87,31 +87,28 @@
       var profilePicUrl = user.photoURL;
       $('.curr-user-name').html(userName);
       $('.curr-user-photo').html(`<img src=${profilePicUrl}></img>`);
-      //$('.sign-out').removeClass('hidden')
-      $('.curr-user-status').html('Sign Out');
-      //$('.sign-in-modal').modal('hide');
-      /*
-      $('.sign-out').removeClass('hidden')
-      $('.sign-out').html('Sign Out');
-      $('.sign-in-modal').modal('hide');
-      */
 
-      $('.chat-messages chat-message').empty();
-      $('.users-list chat-user').empty();
+      $('.sign-out').removeClass('hidden')
+      $('.curr-user-status').html('Sign Out');
+      $('#sign-in-modal').modal('close');
+
+      $('.chat-message').remove();
+      $('.chat-user').remove();
       getMessagesFromFirebase();
       getUsersFromFirebase();
     } else {
       // No user is signed in.
       // console.log('no user');
+      initializeSignInModal();
       $('.curr-user-name').html('');
       $('.curr-user-photo').html('');
-      $('.curr-user-status').html('Sign In');
+      // $('.curr-user-status').html('Sign In');
       //$('.sign-out').addClass('hidden');
-      //initializeSignInModal();
     }
   });
 
   function initializeSignInModal() {
+    $('#sign-in-modal').modal('open');
     //var signInModal = $('#sign-in-modal');
     //signInModal.modal('open');
     //signIn.modal({'show': true, 'backdrop': 'static'}); // static: user can't click background to close modal
@@ -223,14 +220,15 @@
     * if so: call sign out and change the button text to 'sign in'
     * else: call sign in prompt (change button text to 'sign out' in that function once they've signed in)
   */
-  $(document).on('click', '.curr-user-status', function() {
+  $(document).on('click', '.sign-out', function() {
     
     if(checkSignedIn()){
       googleSignOut();
      // $('.sign-out').addClass('hidden');
     }
   });
-  $(document).on('click', '.curr-user-status', function() {
+
+  $(document).on('click', '.sign-in', function() {
     if(!checkSignedIn()){
       googleSignInPopup();
     }
@@ -495,14 +493,17 @@
 // INITIALIZE MATERIALIZE
 //=======================
 
-function initializeMaterialize() {
-  $('select').material_select();
-}
+// moved this to index.html before app.js script. else it wasn't done initializing before materialize things used in app.js, so essentially modal wouldn't show up on page load because it wasn't finished with initializing. 
+
+// function initializeMaterialize() {
+//   $('select').material_select();
+//   $('.modal').modal({dismissible:false});
+// }
 //=================
 // INITIALIZE APP
 //=================
 function initializeApp() {
-  initializeMaterialize();
+  // initializeMaterialize();
   appState = resetAppState();
   // getMessagesFromFirebase(); 
   // getUsersFromFirebase(); 
