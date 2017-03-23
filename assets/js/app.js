@@ -167,15 +167,27 @@
     * this function gets the languages of the two users in the conversation, to be passed into the google translate API call 
     * TODO: find out who the second user in the conversation is and look up their lang
   */
-  function gatherLangs() {
-    database.ref('/users').on('child_added', function(snapshot) {
-      if (auth.currentUser.displayName === snapshot.val().name) {
-        userLang = snapshot.val().lang;
-      }
-      //TODO:
-      if ('Casey Colby' === snapshot.val().name) {
-        targetLang = snapshot.val().lang;
-      }
+
+  function fetchChatUserLang(currUserId, userLang, userInput) {
+    database.ref(`/users/${currUserId}/cId/`).once('value', function(snapshot) {
+      let cId = snapshot.val();
+      let chatUserId;
+      database.ref(`/conversations/${cId}/`).once('value', function(snapshot) {
+        let userOneId = snapshot.val().userOneId;
+        let userTwoId = snapshot.val().userTwoId;
+
+        if (userOneId === currUserId) {
+          chatUserId = userTwoId;
+        } else if (userTwoId === currUserId) {
+          chatUserId = userOneId;
+        }
+        let chatUserLang;
+        database.ref(`/users/${chatUserId}/lang/`).once('value', function(snapshot) {
+          chatUserLang = snapshot.val();
+          console.log(chatUserLang);
+          translate(userLang, chatUserLang, userInput);
+        });
+      });
     });
   }
 
@@ -189,12 +201,13 @@
     event.preventDefault();
     if(checkSignedIn()){
       var userInput = $('.chat-input').val().trim();
-      let userLang = '';
-      let targetLang = '';
-      gatherLangs();
-      target = 'de'; // hard-coding second user's language until gatherLangs fxn working
+      let currUserId = auth.currentUser.uid;
+      let userLang;
+      database.ref(`/users/${currUserId}/lang`).once('value', function(snapshot) {
+        userLang = snapshot.val();
+      });
+      fetchChatUserLang(currUserId, userLang, userInput);
 
-      translate(userLang, target, userInput);
     } else {
       //TODO
       console.log('error not signed in');
@@ -243,6 +256,7 @@
     let currUserId = auth.currentUser.uid;
     database.ref(`/users/${currUserId}/cId/`).on('value', function(snapshot) {
       let cId = snapshot.val();
+      database.ref(`/conversations/${cId}/messages`).off();
       database.ref(`/conversations/${cId}/messages`).limitToLast(10).on('child_added', function(childSnapshot) { // single message snapshot
         let isMessageSender = checkSenderRole(childSnapshot); 
         displayMessage(childSnapshot, isMessageSender); // display 1 message 
