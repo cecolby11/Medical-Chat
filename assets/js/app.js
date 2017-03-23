@@ -98,7 +98,6 @@
       $('.users-list chat-user').empty();
       getMessagesFromFirebase();
       getUsersFromFirebase();
-      watchUsersFromFirebase();
     } else {
       // No user is signed in.
       // console.log('no user');
@@ -265,7 +264,7 @@
   */
   function getUsersFromFirebase () { 
     database.ref('/users').on('child_added', function (childSnapshot, childKey){
-      if (childSnapshot.val().online === true && childSnapshot.key !== auth.currentUser.uid) {
+      if (childSnapshot.key !== auth.currentUser.uid) {
         displayUser(childSnapshot);
       }
     });
@@ -274,16 +273,6 @@
   /**
     * This function uses on("child_changed") listener to check when any user's on/offline status changes. Calls function to add or remove from online-users dropdown. 
   */
-  function watchUsersFromFirebase () {
-    database.ref('/users').on("child_changed", function (childSnapshot){
-      if (childSnapshot.val().online === true && childSnapshot.key !== auth.currentUser.uid) {
-
-        displayUser(childSnapshot); 
-      } else if (childSnapshot.val().online === false ) {
-        removeUser(childSnapshot); 
-      }
-    });
-  }
 
 
 //======================
