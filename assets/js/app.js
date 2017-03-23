@@ -36,8 +36,9 @@
       // identify user by id & name throughout the app
       var name = user.displayName;
       var uid = user.uid; 
+      var photoURL = user.photoURL
       
-      logInUserInDatabase(name, uid); 
+      logInUserInDatabase(name, uid, photoURL); 
     }).catch(function(error) {
       // Handle Errors here.
       var errorCode = error.code;
@@ -123,9 +124,10 @@
     * @param {string} name - the user's display name
     * @param {string} uid - the user's ID 
   */
-  function logInUserInDatabase (name, uid) {
+  function logInUserInDatabase (name, uid, photoURL) {
     var updates = {
       name: name,
+      photoURL: photoURL,
       online: true
     };
 
@@ -299,6 +301,7 @@
     * @param {object} messageObject - a single message object to add (keys: sender, original, translated, timestamp)
   */
   function storeMessageOnFirebase(messageObject) {
+    console.log(auth.currentUser);
     let currUserId = auth.currentUser.uid;
     let cId; 
     database.ref(`/users/${currUserId}/cId/`).once('value', function(snapshot) {
@@ -420,12 +423,19 @@
       messageText = chatMessageContent.translation;
     }
 
+    let senderPhotoURL;
+    if (chatMessageContent.senderPhoto) {
+      senderPhotoURL = chatMessageContent.senderPhoto;
+    } else {
+      senderPhotoURL = 'http://placehold.it/50x50/ff0000';
+    }
+
     let messageTimestamp = chatMessageContent.timestamp;
 
     let chatMessage = `
       <li class="chat-message collection-item">
         <div class="chat-message-body chip">
-          <img src="http://placehold.it/50x50/ff0000">
+          <img src=${senderPhotoURL}>
           ${messageText}
         </div>
         <div class="chat-message-timestamp chip">
@@ -467,8 +477,10 @@
     var emergencyLevel = $('.chat-emergency-level').val(); 
     var timestamp = moment().format();
     var userName = auth.currentUser.displayName;
+    var userPhoto = auth.currentUser.photoURL;
     var messageObject = {
       sender: userName,
+      senderPhoto: userPhoto,
       original: originalText,
       translation: translatedText,
       timestamp: timestamp // TODO: use this in display
