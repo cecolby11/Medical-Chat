@@ -1,3 +1,4 @@
+      
 // API SETUP
 //================
   // save API key for google translate API
@@ -499,3 +500,5 @@ function initializeApp() {
 $(document).ready(function() {
   initializeApp();
 });
+
+
