@@ -47,11 +47,7 @@
             </ul>
             <div class="row">
               <div class="input-field col m2">
-                <select>
-                  <option value="1">EN</option>
-                  <option value="2">ES</option>
-                  <option value="3">DE</option>
-                </select>
+                <select class="lang-select"></select>
                 <label>Language</label>
               </div>
               <div class="input-field col m10">
@@ -132,7 +128,6 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.98.1/js/materialize.min.js"></script>
     <script type="text/javascript">
     // initialize materialize BEFORE it's called in app.js (particularly in order to display the modal on page load if logged out)
-      $('select').material_select();
       $('.modal').modal({dismissible:false});
     </script>
     <script type="text/javascript" src="assets/js/app.js"></script>

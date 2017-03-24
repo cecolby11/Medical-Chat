@@ -37,8 +37,8 @@
       var name = user.displayName;
       var uid = user.uid; 
       var photoURL = user.photoURL
-      
       logInUserInDatabase(name, uid, photoURL); 
+      fetchLangOptions();
     }).catch(function(error) {
       // Handle Errors here.
       var errorCode = error.code;
@@ -94,8 +94,9 @@
 
       $('.chat-message').remove();
       $('.chat-user').remove();
-      getMessagesFromFirebase();
       getUsersFromFirebase();
+      getMessagesFromFirebase();
+      fetchLangOptions();
     } else {
       // No user is signed in.
       // console.log('no user');
@@ -109,9 +110,6 @@
 
   function initializeSignInModal() {
     $('#sign-in-modal').modal('open');
-    //var signInModal = $('#sign-in-modal');
-    //signInModal.modal('open');
-    //signIn.modal({'show': true, 'backdrop': 'static'}); // static: user can't click background to close modal
   }
 
   /**
@@ -143,6 +141,61 @@
     database.ref('/users/' + uid).update(updates);
   }
 
+  function fetchLangOptions() {
+    let currUserId = auth.currentUser.uid; 
+    // fetch user's language from database
+    database.ref(`/users/${currUserId}/lang`).once('value', function(snapshot) {
+      let currUserLang = snapshot.val();
+      // If this is user's first time using application, we will default
+      // to the language set in the browser
+      if (!currUserLang) {
+        currUserLang = navigator.language.substring(0,2);
+        database.ref(`/users/${currUserId}`).update({
+          lang: currUserLang
+        });
+      }
+
+      // update lang-select to show user's current language and a list of 
+      // languages supported by google translate
+      $('.lang-select').append(`
+        <option class="lang-option" value="${currUserLang}" active selected>
+          ${currUserLang.toUpperCase()}
+        </option>
+      `);
+       
+      // fetch languages supported by google translate api via a google
+      // translate api request and add to list
+      let queryURL = `https://translation.googleapis.com/language/translate/v2/languages?key=${API_KEY}`;
+
+      $.ajax({
+        url: queryURL,
+        method: "GET"
+      }).done(function(res) { 
+        let languages = res.data.languages;
+        languages.forEach(function(language) {
+          let lang = language.language;
+          $('.lang-select').append(`
+            <option class="lang-option" value="${lang}">
+              ${lang.toUpperCase()}
+            </option>
+          `);
+        });
+        $('select').material_select();
+      });
+    });
+  }
+ 
+  $('.lang-select').on('change', function(res) {
+    let newLang = $('.lang-option:selected').val();
+    selectLangOption(newLang);
+  });
+
+  function selectLangOption(newLang) {
+    let currUserId = auth.currentUser.uid;
+    database.ref(`/users/${currUserId}/`).update({
+      lang: newLang
+    });
+  }
 
 //===========
 // APP STATE
@@ -184,7 +237,6 @@
         let chatUserLang;
         database.ref(`/users/${chatUserId}/lang/`).once('value', function(snapshot) {
           chatUserLang = snapshot.val();
-          console.log(chatUserLang);
           translate(userLang, chatUserLang, userInput);
         });
       });
@@ -323,6 +375,7 @@
 
     database.ref('/conversations').once('value', function(snapshot) {
       let conversations = snapshot.val();
+      console.log(conversations);
       let conversationFound = false;
       Object.keys(conversations).forEach(function(key, i) {
         let userOneId = conversations[key].userOneId;
