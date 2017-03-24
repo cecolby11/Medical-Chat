@@ -7,7 +7,8 @@ body {
 }
  
 // HEADER (NAVBAR)
-
+.nav-wrapper {
+}
 .curr-user-name {
   display: inline-block;
   width: auto;
@@ -21,6 +22,8 @@ body {
   height: 40px;
   width: 40px;
   border-radius: 50%;
+}
+.curr-user-status {
 }
  
 // MAIN
@@ -42,11 +45,14 @@ main {
     width: 90%;
   }
 }
-.chatbox {
 
+.chat-user {
+  color: #ff6f00 !important;
+}
+
+.chatbox {
 }
 .chat-history {  
-
 }
 .chat-message {
 }
@@ -55,20 +61,58 @@ main {
 .chat-message-timestamp {
   float: right;
 }
-
 .lang-select {
   text-align: left;
 }
-.lang-select-option {
+.lang-option.active {
   text-align: left;
+  color: #ffc107 !important;
+}
+.lang-select ul li span {
+  color: #ffc107 !important;
 }
 
+
+.message-field {
+  margin: 0 !important;
+}
 .chat-input {
   width: 500px;
 }
-.chat-submit {
+
+.chat-input:focus {
 
 }
+.chat-submit {
+}
+
+.message-field label {
+ color: #000;
+}
+/* label focus color */
+.chat-input:focus + label {
+ color: #ffc107 !important;
+}
+/* label underline focus color */
+.chat-input:focus {
+ border-bottom: 1px solid #ffc107 !important;
+ box-shadow: 0 1px 0 0 #ffc107 !important;
+}
+/* valid color */
+.chat-input.valid {
+ border-bottom: 1px solid #ffc107 !important;
+ box-shadow: 0 1px 0 0 #ffc107 !important;
+}
+/* invalid color */
+.chat-input.invalid {
+ border-bottom: 1px solid !important;
+ box-shadow: 0 1px 0 0 !important;
+}
+.input-field .prefix.active {
+  color: #ffc107;
+}
+
+
 
 
 .modal {
@@ -85,3 +129,16 @@ main {
 .modal-footer {
   border: none;
 }
+
+// FOOTER
+
+.brand-img {
+  padding: 20px;
+  border-radius: 20px;
+}
+.footer-links {
+  padding: 20px !important;
+  border-radius: 20px;
+}
+
+// Materialize icons, badges, etc
