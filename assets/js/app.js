@@ -299,7 +299,6 @@
     * @param {object} messageObject - a single message object to add (keys: sender, original, translated, timestamp)
   */
   function storeMessageOnFirebase(messageObject) {
-    console.log(auth.currentUser);
     let currUserId = auth.currentUser.uid;
     let cId; 
     database.ref(`/users/${currUserId}/cId/`).once('value', function(snapshot) {
@@ -428,7 +427,7 @@
       senderPhotoURL = 'http://placehold.it/50x50/ff0000';
     }
 
-    let messageTimestamp = chatMessageContent.timestamp;
+    let messageTimestamp = moment(chatMessageContent.timestamp).format('MMM D, h:mm A');
 
     let chatMessage = `
       <li class="chat-message collection-item">
@@ -472,8 +471,8 @@
     * @param {string} originalText - the query in the native language 
   */
   function handleTranslateResponse(translatedText, originalText) {
-    var emergencyLevel = $('.chat-emergency-level').val(); 
-    var timestamp = moment().format();
+    var timestamp = moment().utc().format();
+    console.log(timestamp);
     var userName = auth.currentUser.displayName;
     var userPhoto = auth.currentUser.photoURL;
     var messageObject = {
@@ -513,5 +512,4 @@ function initializeApp() {
 $(document).ready(function() {
   initializeApp();
 });
-
 
