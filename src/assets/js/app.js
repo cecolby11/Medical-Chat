@@ -1,10 +1,5 @@
-//================
-// API SETUP
-//================
- 
-// save API key for google translate API
-const API_KEY = 'AIzaSyD5phUVsdXQDXdnAQs2QJ9CpwiksKQS1WM';
-
+$(document).ready(function() {
+   
 //================
 // FIREBASE SETUP
 //================
@@ -57,25 +52,13 @@ function googleSignInPopup() {
   * This function signs the current user out of their google account
 */
 function googleSignOut() {
-  var userId = auth.currentUser.uid;
-  logOutUserInDatabase (userId); 
+  var currUserId = auth.currentUser.uid;
+  logOutUserInDatabase(currUserId); 
   firebase.auth().signOut().then(function() {
     // Sign-out successful.
   }).catch(function(error) {
     // An error happened.
   });
-}
-
-/**
-  * This function checks if the user is signed in (if there is a current user). 
-  * returns true if signed in
-*/
-function checkSignedIn(){
-  if(auth.currentUser)  {
-    return true;
-  } else {
-    //TODO
-  }
 }
 
 /**
@@ -90,11 +73,7 @@ firebase.auth().onAuthStateChanged(function(user) {
     var profilePicUrl = user.photoURL;
     $('.curr-user-name').html(userName);
     $('.curr-user-photo').html(`<img src=${profilePicUrl}></img>`);
-
-    $('.sign-out').removeClass('hidden')
-    $('.curr-user-status').html('Sign Out');
     $('#sign-in-modal').modal('close');
-
     $('.chat-message').remove();
     $('.chat-user').remove();
     getUsersFromFirebase();
@@ -102,12 +81,9 @@ firebase.auth().onAuthStateChanged(function(user) {
     fetchLangOptions();
   } else {
     // No user is signed in.
-    // console.log('no user');
     initializeSignInModal();
     $('.curr-user-name').html('');
     $('.curr-user-photo').html('');
-    // $('.curr-user-status').html('Sign In');
-    //$('.sign-out').addClass('hidden');
   }
 });
 
@@ -128,7 +104,6 @@ function logInUserInDatabase (name, uid, photoURL) {
     photoURL: photoURL,
     online: true
   };
-
  database.ref('/users/' + uid).update(updates); 
 }
 
@@ -137,10 +112,7 @@ function logInUserInDatabase (name, uid, photoURL) {
   * @param {string} uid - the current user's ID so the matching key can be found in the database and updated 
 */
 function logOutUserInDatabase (uid) {
-  var updates = {
-    online: false
-  };
-
+  var updates = { online: false };
   database.ref('/users/' + uid).update(updates);
 }
 
@@ -188,17 +160,15 @@ function fetchLangOptions() {
   });
 }
 
+// create event handler for selecting languages. On language select,
+// user's new language will be saved to database
 $('.lang-select').on('change', function(res) {
   let newLang = $('.lang-option:selected').val();
-  selectLangOption(newLang);
-});
-
-function selectLangOption(newLang) {
   let currUserId = auth.currentUser.uid;
   database.ref(`/users/${currUserId}/`).update({
     lang: newLang
   });
-}
+});
 
 //===========
 // APP STATE
@@ -207,13 +177,15 @@ function selectLangOption(newLang) {
 /**
   * app state would used more as app is built out further -- for now, most of the state changes are linked to firebase auth state 
 */
+
+/*
 let appState; 
 function resetAppState() {
   return {
     cId: ''
   };
 }
-
+*/
 
 //===================
 // EVENT MANAGEMENT
@@ -254,7 +226,7 @@ function fetchChatUserLang(currUserId, userLang, userInput) {
 */
 $('.chat-submit').on('click', function() {
   event.preventDefault();
-  if(checkSignedIn()){
+  if (auth.currentUser) {
     var userInput = $('.chat-input').val().trim();
     let currUserId = auth.currentUser.uid;
     let userLang;
@@ -275,18 +247,12 @@ $('.chat-submit').on('click', function() {
   * if so: call sign out and change the button text to 'sign in'
   * else: call sign in prompt (change button text to 'sign out' in that function once they've signed in)
 */
-$(document).on('click', '.sign-out', function() {
-  
-  if(checkSignedIn()){
-    googleSignOut();
-   // $('.sign-out').addClass('hidden');
-  }
+$('.sign-out').on('click', function() {
+  if (auth.currentUser) { googleSignOut(); }
 });
 
-$(document).on('click', '.sign-in', function() {
-  if(!checkSignedIn()){
-    googleSignInPopup();
-  }
+$('.sign-in').on('click', function() {
+  if (!auth.currentUser) { googleSignInPopup(); }
 })
 
 /**
@@ -378,7 +344,6 @@ function fetchConversation(chatUserId) {
 
   database.ref('/conversations').once('value', function(snapshot) {
     let conversations = snapshot.val();
-    console.log(conversations);
     let conversationFound = false;
     Object.keys(conversations).forEach(function(key, i) {
       let userOneId = conversations[key].userOneId;
@@ -517,6 +482,9 @@ function displayMessage(singleMessage, isMessageSender = true) {
 //==========================
 // TRANSLATE API
 //==========================
+ 
+// save API key for google translate API
+const API_KEY = 'AIzaSyD5phUVsdXQDXdnAQs2QJ9CpwiksKQS1WM';
 
 /**
   * This function makes the ajax request to the Google Translate API, and passes the translated text from the response to a function handleTranslateResponse
@@ -543,7 +511,6 @@ function translate(source = 'en', target = 'en', originalText) {
 */
 function handleTranslateResponse(translatedText, originalText) {
   var timestamp = moment().utc().format();
-  console.log(timestamp);
   var userName = auth.currentUser.displayName;
   var userPhoto = auth.currentUser.photoURL;
   var messageObject = {
@@ -559,28 +526,15 @@ function handleTranslateResponse(translatedText, originalText) {
   $('.chat-input').val("");
 }
 
-//=======================
-// INITIALIZE MATERIALIZE
-//=======================
-
-// moved this to index.html before app.js script. else it wasn't done initializing before materialize things used in app.js, so essentially modal wouldn't show up on page load because it wasn't finished with initializing. 
-
-// function initializeMaterialize() {
-//   $('select').material_select();
-//   $('.modal').modal({dismissible:false});
-// }
 //=================
 // INITIALIZE APP
 //=================
+ 
+/*
 function initializeApp() {
-  // initializeMaterialize();
   appState = resetAppState();
-  // getMessagesFromFirebase(); 
-  // getUsersFromFirebase(); 
-  // watchUsersFromFirebase();
 }
+*/
 
-$(document).ready(function() {
-  initializeApp();
+//initializeApp();
 });
-
