@@ -235,11 +235,7 @@ $('.chat-submit').on('click', function() {
     });
     fetchChatUserLang(currUserId, userLang, userInput);
 
-  } else {
-    //TODO
-    console.log('error not signed in');
-  }
-
+  } 
 });
 
 /**
