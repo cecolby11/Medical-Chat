@@ -435,7 +435,7 @@ function createConversation(chatUserId) {
 function getUserStatus(userStatus) {
   if (userStatus) {
     return `
-      <span class="new badge green" data-badge-caption="online"></span>
+      <span class="new badge cyan accent-4" data-badge-caption="online"></span>
     `;
   } else {
     return `
@@ -454,7 +454,7 @@ function displayUser (userSnapshot) {
       <a class="chat-user collection-item" href="#"
         data-uid="${userID}">
         ${userName}
-        <span class="new badge">
+        <span class="new badge teal accent-4">
           ${numUnreadMessages}
         </span>
         ${userStatus}

@@ -1,5 +1,5 @@
 {
   "hosting": {
-    "public": "hosted_on_firebase"
+    "public": "./dist"
   }
 }
