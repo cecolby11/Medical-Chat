@@ -235,11 +235,7 @@ $('.chat-submit').on('click', function() {
     });
     fetchChatUserLang(currUserId, userLang, userInput);
 
-  } else {
-    //TODO
-    console.log('error not signed in');
-  }
-
+  } 
 });
 
 /**
@@ -404,7 +400,7 @@ function getUserStatus(userStatus) {
     `;
   } else {
     return `
-      <span class="new badge gray" data-badge-caption="offline">offline</span>
+      <span class="new badge gray" data-badge-caption="offline"></span>
     `;
   }
 }

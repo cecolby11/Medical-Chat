@@ -400,7 +400,7 @@ function getUserStatus(userStatus) {
     `;
   } else {
     return `
-      <span class="new badge gray" data-badge-caption="offline">offline</span>
+      <span class="new badge gray" data-badge-caption="offline"></span>
     `;
   }
 }
