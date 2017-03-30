@@ -1,17 +1,27 @@
+:root{
+  --bright-color: #ef5350 !important;
+  --light-color: #BEFFF8 !important;
+  --neutral-grey: #424242 !important;
+
+}
+
 body {
-  background-image: url('../img/crossword.png');
+  background-image: url('../img/paper.png');
   display: flex;
   min-height: 100vh;
   flex-direction: column;
 }
 
 /*navbar*/
-.nav-wrapper {
+nav a {
+  font-weight: 200;
+}
+.sign-out {
+  font-weight: 400;
 }
 .curr-user-name {
   display: inline-block;
   width: auto;
-  color: purple;
 }
 .curr-user-photo {
   padding: 11px;
@@ -28,6 +38,10 @@ body {
 /*main*/
 main {
   flex: 1 0 auto;
+}
+main h5{
+  font-weight: 300;
+  color: var(--bright-color);
 }
 .container {
   margin: 2% auto;
@@ -47,7 +61,12 @@ main {
 
 /*users list*/
 .chat-user {
-  color: #ff6f00 !important;
+  color: var(--neutral-grey) !important;
+}
+
+.chat-user.active {
+  color: white !important;
+  background: ;
 }
 
 /*language dropdown*/
@@ -56,10 +75,10 @@ main {
 }
 .lang-option.active {
   text-align: left;
-  color: #ffc107 !important;
+  color: var(--bright-color);
 }
 .lang-select ul li span {
-  color: #ffc107 !important;
+  color: var(--bright-color);
 }
 
 /*chat containers/sections*/
@@ -93,17 +112,17 @@ main {
 }
 /* label focus color */
 .chat-input:focus + label {
- color: #ffc107 !important;
+ color: var(--bright-color);
 }
 /* label underline focus color */
 .chat-input:focus {
- border-bottom: 1px solid #ffc107 !important;
- box-shadow: 0 1px 0 0 #ffc107 !important;
+ border-bottom: 1px solid var(--bright-color);
+ box-shadow: 0 1px 0 0 var(--bright-color);
 }
 /* valid color */
 .chat-input.valid {
- border-bottom: 1px solid #ffc107 !important;
- box-shadow: 0 1px 0 0 #ffc107 !important;
+ border-bottom: 1px solid var(--bright-color);
+ box-shadow: 0 1px 0 0 var(--bright-color);
 }
 /* invalid color */
 .chat-input.invalid {
@@ -121,10 +140,15 @@ main {
 }
 .modal-content{
   height: 200px;
+  font-weight: 300;
+  color: var(--bright-color);
 }
-.modal button {
-  opacity: 0.8;
-  color: purple;
+.modal-content p{
+  font-size: large;
+}
+.modal-action {
+  font-size: large;
+  background: var(--light-color);
 }
 .modal-footer {
   border: none;

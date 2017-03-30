@@ -112,12 +112,13 @@ function logInUserInDatabase (name, uid, photoURL) {
   * @param {string} uid - the current user's ID so the matching key can be found in the database and updated 
 */
 function logOutUserInDatabase (uid) {
-  var updates = { online: false };
+  var updates = { 
+    online: false 
+  };
   database.ref('/users/' + uid).update(updates);
 }
 
 function fetchLangOptions() {
-  console.log('HERE');
   let currUserId = auth.currentUser.uid; 
   // fetch user's language from database
   database.ref(`/users/${currUserId}/lang`).once('value', function(snapshot) {
@@ -236,7 +237,6 @@ $('.chat-submit').on('click', function() {
       userLang = snapshot.val();
     });
     fetchChatUserLang(currUserId, userLang, userInput);
-
   } 
 });
 
@@ -262,8 +262,10 @@ $(".users-list").on("click", ".chat-user", function () {
   var chatUserId = $(this).attr("data-uid");
   if($('.chat-user').hasClass('active')){
     $('.chat-user').removeClass('active');
+    $('.other-user-name').empty();
   }
   $(this).addClass('active'); //highlight current user in list
+  $('.other-user-name').html(' with ' + $(this).text());
   $(".chat-messages .chat-message").remove();
   fetchConversation(chatUserId); 
 });
@@ -347,17 +349,19 @@ function fetchConversation(chatUserId) {
   database.ref('/conversations').once('value', function(snapshot) {
     let conversations = snapshot.val();
     let conversationFound = false;
-    Object.keys(conversations).forEach(function(key, i) {
-      let userOneId = conversations[key].userOneId;
-      let userTwoId = conversations[key].userTwoId;
-      if ((currUserId === userOneId && chatUserId === userTwoId) ||
-        (currUserId === userTwoId && chatUserId === userOneId)) {
-          database.ref('/users/' + currUserId).update({
-            cId: key
-          });
-        conversationFound = true;
-      } 
-    });
+    if(conversations !== null) {
+      Object.keys(conversations).forEach(function(key, i) {
+        let userOneId = conversations[key].userOneId;
+        let userTwoId = conversations[key].userTwoId;
+        if ((currUserId === userOneId && chatUserId === userTwoId) ||
+          (currUserId === userTwoId && chatUserId === userOneId)) {
+            database.ref('/users/' + currUserId).update({
+              cId: key
+            });
+          conversationFound = true;
+        } 
+      });
+    }
     if (!conversationFound) {
       createConversation(chatUserId);
     }
@@ -402,11 +406,11 @@ function createConversation(chatUserId) {
 function getUserStatus(userStatus) {
   if (userStatus) {
     return `
-      <span class="new badge cyan accent-4" data-badge-caption="online"></span>
+      <span class="new badge cyan lighten-3" data-badge-caption="online"></span>
     `;
   } else {
     return `
-      <span class="new badge gray" data-badge-caption="offline"></span>
+      <span class="new badge cyan lighten-4" data-badge-caption="offline"></span>
     `;
   }
 }
@@ -415,13 +419,14 @@ function displayUser (userSnapshot) {
     let userName = userSnapshot.val().name;
     let userID = userSnapshot.key; 
     let conversationID = userSnapshot.val().cId;
+    let isUserOnline = userSnapshot.val().online;
     let userStatus = getUserStatus(userSnapshot.val().online);
     let numUnreadMessages = 5;
     let user = `
       <a class="chat-user collection-item" href="#"
         data-uid="${userID}">
         ${userName}
-        <span class="new badge teal accent-4">
+        <span class="new badge red accent-2">
           ${numUnreadMessages}
         </span>
         ${userStatus}
@@ -446,7 +451,6 @@ function removeUser (userSnapshot) {
   * @param {bool} isMessageSender - true if auth.currentUser is the sender of the message. used to determine if original or translation should be displayed from snapshot.
 */  
 function displayMessage(singleMessage, isMessageSender = true) {
-
   var chatMessages = $('.chat-messages');
 
   var chatMessageContent = singleMessage.val();
