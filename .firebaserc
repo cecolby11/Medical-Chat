@@ -1,7 +1,5 @@
 {
   "projects": {
-    "default": "medical-chat",
-    "casey": "medical-chat",
-    "willie": "medical-chat"
+    "default": "translation-chat-b2933"
   }
 }
