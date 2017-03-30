@@ -3,30 +3,26 @@ $(document).ready(function() {
 //================
 // FIREBASE SETUP
 //================
-// 
+
 // Initialize Firebase
-  
-const config = {
-  apiKey: "AIzaSyBcxlMvEGf_-Ms_WzguEUmTmh3xCZWc9X4",
-  authDomain: "medical-chat.firebaseapp.com",
-  databaseURL: "https://medical-chat.firebaseio.com",
-  storageBucket: "medical-chat.appspot.com",
-  messagingSenderId: "1065425949070"
-};
+var config = {
+    apiKey: "AIzaSyB4pxKfx3ZqGDsKD3AcGsd2W62qoOYdXSQ",
+    authDomain: "translation-chat-b2933.firebaseapp.com",
+    databaseURL: "https://translation-chat-b2933.firebaseio.com",
+    storageBucket: "translation-chat-b2933.appspot.com",
+    messagingSenderId: "988353944532"
+  };
 firebase.initializeApp(config);
 
 var database = firebase.database();
 var provider = new firebase.auth.GoogleAuthProvider();
 var auth = firebase.auth();
-var storage = firebase.storage();
 
 /**
-  * This function facilitates user sign-in via their google account. 
+  * This function facilitates user sign-in via google auth provider
 */
-function googleSignInPopup() {
+function googleSignInWithPopup() {
   firebase.auth().signInWithPopup(provider).then(function(result) {
-    // update button text
-    $('.sign-out').html('Sign Out');
     // This gives you a Google Access Token. You can use it to access the Google API.
     var token = result.credential.accessToken;
     // The signed-in user info.
@@ -35,8 +31,8 @@ function googleSignInPopup() {
     var name = user.displayName;
     var uid = user.uid; 
     var photoURL = user.photoURL
-    logInUserInDatabase(name, uid, photoURL); 
-    fetchLangOptions();
+    // pass user info to database handling
+    logInUserInDatabase(name, uid, photoURL);  
   }).catch(function(error) {
     // Handle Errors here.
     var errorCode = error.code;
@@ -49,7 +45,7 @@ function googleSignInPopup() {
 }
 
 /**
-  * This function signs the current user out of their google account
+  * This function signs the current user out via google auth
 */
 function googleSignOut() {
   var currUserId = auth.currentUser.uid;
@@ -76,14 +72,18 @@ firebase.auth().onAuthStateChanged(function(user) {
     $('#sign-in-modal').modal('close');
     $('.chat-message').remove();
     $('.chat-user').remove();
+    $('.sign-out').removeClass('hide');
     getUsersFromFirebase();
     getMessagesFromFirebase();
     fetchLangOptions();
   } else {
     // No user is signed in.
     initializeSignInModal();
+    // keep from duplicating the dynamically created dropdown elements when re-created on next sign-in
+    $('select').material_select('destroy'); 
     $('.curr-user-name').html('');
     $('.curr-user-photo').html('');
+    $('.sign-out').addClass('hide');
   }
 });
 
@@ -117,6 +117,7 @@ function logOutUserInDatabase (uid) {
 }
 
 function fetchLangOptions() {
+  console.log('HERE');
   let currUserId = auth.currentUser.uid; 
   // fetch user's language from database
   database.ref(`/users/${currUserId}/lang`).once('value', function(snapshot) {
@@ -130,6 +131,7 @@ function fetchLangOptions() {
       });
     }
 
+    // empty any previous options, then
     // update lang-select to show user's current language and a list of 
     // languages supported by google translate
     $('.lang-select').append(`
@@ -248,7 +250,7 @@ $('.sign-out').on('click', function() {
 });
 
 $('.sign-in').on('click', function() {
-  if (!auth.currentUser) { googleSignInPopup(); }
+  if (!auth.currentUser) { googleSignInWithPopup(); }
 })
 
 /**
