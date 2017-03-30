@@ -260,6 +260,10 @@ $('.sign-in').on('click', function() {
 */
 $(".users-list").on("click", ".chat-user", function () {
   var chatUserId = $(this).attr("data-uid");
+  if($('.chat-user').hasClass('active')){
+    $('.chat-user').removeClass('active');
+  }
+  $(this).addClass('active'); //highlight current user in list
   $(".chat-messages .chat-message").remove();
   fetchConversation(chatUserId); 
 });
