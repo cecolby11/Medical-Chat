@@ -489,6 +489,21 @@ function displayMessage(singleMessage, isMessageSender = true) {
   chatMessages.append(chatMessage);
 }
 
+function revealTranslationProgressBar() {
+  var newProgressBar = $(`
+    <div class="translation-progress">
+      <label>Translating to recipient</label>
+      <div class="progress">
+        <div class="indeterminate purple"></div>
+      </div>
+    </div>
+    `)
+  $('.chat-messages').append(newProgressBar);
+}
+
+function removeTranslationProgressBar() {
+  $('.translation-progress').remove();
+}
 //==========================
 // TRANSLATE API
 //==========================
@@ -503,6 +518,7 @@ const API_KEY = 'AIzaSyD5phUVsdXQDXdnAQs2QJ9CpwiksKQS1WM';
   * @param {string} originalText - the current user's input into the chat in their original language
 */
 function translate(source = 'en', target = 'en', originalText) {
+  revealTranslationProgressBar();
   let queryURL = `https://translation.googleapis.com/language/translate/v2?key=${API_KEY}&q=${originalText}&source=${source}&target=${target}`;
 
   $.ajax({
@@ -511,6 +527,7 @@ function translate(source = 'en', target = 'en', originalText) {
   }).done(function(res) { 
     translatedText = res.data.translations[0].translatedText;
     handleTranslateResponse(translatedText, originalText);
+    removeTranslationProgressBar();
   });
 }
 
@@ -535,6 +552,7 @@ function handleTranslateResponse(translatedText, originalText) {
   // reset form input to show placeholder
   $('.chat-input').val("");
 }
+
 
 //=================
 // INITIALIZE APP
