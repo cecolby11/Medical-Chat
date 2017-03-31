@@ -1,7 +1,8 @@
 :root{
-  --bright-color: #ef5350 !important;
-  --light-color: #BEFFF8 !important;
-  --neutral-grey: #424242 !important;
+  --bright-color: #ef5350;
+  --grey-color: #424242;
+  --main-color: #4A148C;
+  --light-color: #e1bee7;
 
 }
 
@@ -15,6 +16,16 @@ body {
 /*navbar*/
 nav a {
   font-weight: 200;
+}
+nav .brand-logo {
+  margin:5px;
+  height: 90%; /*so logo set to 100% shrinks down to nav size*/
+  width: auto;
+}
+nav .brand-logo img{
+  height: 100%;
+  width: auto;
+  /*margin: 20px;*/ /*so it floats halfway between nav and page*/
 }
 .sign-out {
   font-weight: 400;
@@ -38,10 +49,11 @@ nav a {
 /*main*/
 main {
   flex: 1 0 auto;
+  margin-top: 60px;
 }
 main h5{
   font-weight: 300;
-  color: var(--bright-color);
+  color: var(--bright-color) !important;
 }
 .container {
   margin: 2% auto;
@@ -61,10 +73,11 @@ main h5{
 
 /*users list*/
 .chat-user {
-  color: var(--neutral-grey) !important;
+  color: var(--main-color) !important;
 }
 
 .chat-user.active {
+  background: var(--main-color) !important;
   color: white !important;
   background: ;
 }
@@ -141,14 +154,12 @@ main h5{
 .modal-content{
   height: 200px;
   font-weight: 300;
-  color: var(--bright-color);
 }
 .modal-content p{
   font-size: large;
 }
 .modal-action {
   font-size: large;
-  background: var(--light-color);
 }
 .modal-footer {
   border: none;

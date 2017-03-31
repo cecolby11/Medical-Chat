@@ -3,6 +3,7 @@
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="shortcut icon" type="image/x-icon" href="assets/img/favicon.ico">
     <!-- styles -->
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.98.1/css/materialize.min.css">
@@ -20,14 +21,30 @@
     <header>
     <div class="col md-3">
       <div class="navbar-fixed">
-        <nav>
-          <div class="nav-wrapper white">
-          <a id="heading" href="#" class="brand-logo center grey-text text-darken-3">WCC Health Network ~ Medical Chat</a>
+        <nav class="nav-extended purple darken-4">
+
+          <!-- nav main -->
+          <div class="nav-wrapper purple lighten-4"><!-- 
+            <a id="heading" href="#" class="brand-logo center purple-text text-lighten-5"><i class="material-icons">chat</i>Medical Chat</a> -->
+            <a href="#" class="brand-logo center horizontal"><img src="assets/img/logo_world.png"></a>
             <ul id="nav-mobile" class="right hide-on-med-and-down">
               <li class="curr-user-photo"></li>
-              <li><a class="waves-effect waves-light btn grey lighten-4 grey-text text-darken-2 sign-out">Sign Out</a></li>
+              <li class="curr-user-name"></li>
+              <li><a class="waves-effect waves-light btn grey darken-2 purple-text text-lighten-4 sign-out">Sign Out</a></li>
             </ul>
           </div>
+          <!-- /.nav main -->
+
+          <!-- nav tabs -->
+          <div class="nav-content">
+            <ul class="tabs tabs-transparent">
+              <li class="tab"><a href="#" class="purple-text text-lighten-5">Medical Chat</a></li>
+              <li class="tab"><a href="#" class="purple-text text-lighten-5">Test Results</a></li>
+            </ul>
+          </div>
+          <!-- /.nav tabs -->
+
+
         </nav>                                     
       </div>
     </header>
@@ -35,20 +52,22 @@
     <main>
       <div id="sign-in-modal" class="modal">
         <div class="modal-content">
-          <h4>Welcome to WCC Medical Translation Chat</h4>
-          <p>You are not signed in.</p>
+          <h4 class="purple-text text-darken-4">Welcome to WCC Medical Translation Chat</h4>
+          <p class="red-text text-lighten-1">You are not signed in.</p>
         </div>
         <div class="modal-footer">
-          <a href="#" class="modal-action waves-effect waves-green btn-flat sign-in">Sign In</a>
+          <a href="#" class="modal-action waves-effect waves-green purple-text text-darken-1 btn-flat sign-in">Sign In</a>
         </div>
       </div>
       <div class="container">
         <div class="row">
+
           <div class="col m3">
             <div class="users-list collection with-header">
               <div class="collection-header"><h5>Users</h5></div>
             </div>
           </div>
+          
           <div class="col m6">
             <ul class="chat-messages collection with-header">
               <li class="collection-header">
@@ -72,58 +91,59 @@
               </div>
             </div>
           </div>
-         <div class="col m3">
-             <div class="card horizontal">
+
+          <div class="col m3">
+            <div class="card horizontal">
+              <div class="card-image">
+                <img src="assets/img/bones.jpg">
+              </div>
+              <div class="card-stacked">
+                <div class="card-content">
+                  <h5>X-Ray</h5><p>Mar 2017</p>
+                </div>
+                <div class="card-action">
+                  <a class="card-link red-text text-darken-1" href="#">See Your Results</a>
+                </div>
+              </div>
+            </div>
+            <div class="card horizontal">
                <div class="card-image">
-                 <img src="assets/img/bones.jpg">
-               </div>
+                <img src="assets/img/aneurism.jpg">
+              </div>
                <div class="card-stacked">
-                 <div class="card-content">
-                   <h5>X-Ray</h5><p>Mar 2017</p>
-                 </div>
-                 <div class="card-action">
-                   <a class="card-link red-text text-darken-1" href="#">See Your Results</a>
-                 </div>
-               </div>
-             </div>
-             <div class="card horizontal">
-               <div class="card-image">
-                 <img src="assets/img/aneurism.jpg">
-               </div>
-               <div class="card-stacked">
-                 <div class="card-content">
-                   <h5>MRI</h5><p>Sept 2016</p>
-                 </div>
-                 <div class="card-action">
-                   <a class="card-link red-text text-darken-1" href="#">See Your Results</a>
-                 </div>
-               </div>
-             </div>
-           </div>
-         </div>
-       </div>
-     </main>
+                <div class="card-content">
+                  <h5>MRI</h5><p>Sept 2016</p>
+                </div>
+                <div class="card-action">
+                  <a class="card-link red-text text-darken-1" href="#">See Your  Results</a>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </main>
   
-    <footer class="page-footer cyan lighten-4">
+    <footer class="page-footer grey darken-4">
       <div class="container">
         <!-- row -->
         <div class="row">
           <div class="col l6 s12">
 
           <!-- WCC logo -->
-          <a id = "logo" href="#" class="brand-logo"><img class="brand-img responsive-img white" src="assets/img/wcc-new-resized.png">
+          <a id = "logo" href="#" class="brand-logo"><img class="brand-img responsive-img grey darken-2" src="assets/img/wcc-new-resized_p.png">
           </div>
           <!-- /.WCC logo -->
           
           <!-- footer links -->
-          <div class="footer-links grey lighten-2 col l3 offset-l3 s12">
-            <h5 class="grey-text text-darken-3">WCC Patient Access</h5>
+          <div class="footer-links grey darken-3 col l3 offset-l3 s12">
+            <h5 class="purple-text text-lighten-5">WCC Patient Access</h5>
             <ul>
-              <li><a class="red-text text-lighten-1" href="#!">Make an Appointment</a></li>
-              <li><a class="red-text text-lighten-1" href="#!">Schedule a Test</a></li>
-              <li><a class="red-text text-lighten-1" href="#!">Find a New Doctor</a></li>
-              <li><a class="red-text text-lighten-1" href="#!">Verify Your Insurance Coverage</a></li>
-              <li><a class="red-text text-lighten-1" href="#!">Pay Your Account Balance</a></li>
+              <li><a class="purple-text text-accent-2" href="#!">Make an Appointment</a></li>
+              <li><a class="purple-text text-accent-2" href="#!">Schedule a Test</a></li>
+              <li><a class="purple-text text-accent-2" href="#!">Find a New Doctor</a></li>
+              <li><a class="purple-text text-accent-2" href="#!">Verify Your Insurance Coverage</a></li>
+              <li><a class="purple-text text-accent-2" href="#!">Pay Your Account Balance</a></li>
             </ul>
           </div>
           <!-- /.footer links -->
@@ -133,10 +153,10 @@
       <!-- /.row -->
 
       <!-- copyright -->
-      <div class="footer-copyright grey-text text-darken-3">
+      <div class="footer-copyright grey darken-3 grey-text text-lighten-1">
         <div class="container">
         © 2017 WCC Health Network
-        <a class="grey-text text-lighten-4 right" href="#!">WCC MyChart Patient Records</a>
+        <a class="grey-text text-lighten-1 right" href="#!">WCC MyChart Patient Records</a>
         </div>
       </div>
       <!-- /.copyright -->
