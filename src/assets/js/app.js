@@ -260,12 +260,15 @@ $('.sign-in').on('click', function() {
 */
 $(".users-list").on("click", ".chat-user", function () {
   var chatUserId = $(this).attr("data-uid");
+  // if some other chat user was selected:
   if($('.chat-user').hasClass('active')){
     $('.chat-user').removeClass('active');
+    $('.chat-user').prop('disabled', false);
     $('.other-user-name').empty();
   }
-  $(this).addClass('active'); //highlight current user in list
-  $('.other-user-name').html(' with ' + $(this).text());
+  $(this).addClass('active'); //highlights current user in list
+  $(this).prop('disabled', true);
+  $('.other-user-name').html(' with ' + $(this).attr("data-name"));
   $(".chat-messages .chat-message").remove();
   fetchConversation(chatUserId); 
 });
@@ -280,6 +283,7 @@ $(".users-list").on("click", ".chat-user", function () {
 */
 function getMessagesFromFirebase() {
   let currUserId = auth.currentUser.uid;
+  // on login, this function called, so adds listener that does work if cID changes? 
   database.ref(`/users/${currUserId}/cId/`).on('value', function(snapshot) {
     let cId = snapshot.val();
     database.ref(`/conversations/${cId}/messages`).off();
@@ -424,7 +428,7 @@ function displayUser (userSnapshot) {
     let numUnreadMessages = 5;
     let user = `
       <a class="chat-user collection-item" href="#"
-        data-uid="${userID}">
+        data-uid="${userID}" data-name="${userName}">
         ${userName}
         <span class="new badge red accent-2">
           ${numUnreadMessages}

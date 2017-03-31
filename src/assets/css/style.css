@@ -15,11 +15,15 @@ body {
 
 /*navbar*/
 nav a {
-  font-weight: 200;
+  font-weight: 300;
+}
+nav .nav-content {
+  height: 50px;
+  line-height: 50px;
+  overflow: auto;
 }
 nav .brand-logo {
-  margin:5px;
-  height: 90%; /*so logo set to 100% shrinks down to nav size*/
+  height: 100%; /*so logo set to 100% shrinks down to nav size*/
   width: auto;
 }
 nav .brand-logo img{
