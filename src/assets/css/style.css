@@ -20,7 +20,10 @@ nav a {
 nav .nav-content {
   height: 50px;
   line-height: 50px;
-  overflow: auto;
+}
+nav .nav-content ul {
+  position: absolute; /*default relative has it shifted down below the nav-content*/
+  vertical-align: top;
 }
 nav .brand-logo {
   height: 100%; /*so logo set to 100% shrinks down to nav size*/
