@@ -64,11 +64,14 @@ function googleSignOut() {
 */
 firebase.auth().onAuthStateChanged(function(user) {
   if (user) {
+    console.log(auth.currentUser);
     // if signed in: display user info  
     var userName = user.displayName;
     var profilePicUrl = user.photoURL;
+    var email = user.email;
     $('.curr-user-name').html(userName);
     $('.curr-user-photo').html(`<img src=${profilePicUrl}></img>`);
+    $('.curr-user-email').html(email);
     $('#sign-in-modal').modal('close');
     $('.chat-message').remove();
     $('.chat-user').remove();

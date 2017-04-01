@@ -19,10 +19,8 @@
   <body>
 
     <header>
-    <div class="col md-3">
       <div class="navbar-fixed">
         <nav class="nav-extended purple darken-3">
-
           <!-- nav main -->
           <div class="nav-wrapper purple darken-4"><!-- 
             <a id="heading" href="#" class="brand-logo center purple-text text-lighten-5"><i class="material-icons">chat</i>Medical Chat</a> -->
@@ -34,22 +32,22 @@
             </ul>
           </div>
           <!-- /.nav main -->
-
           <!-- nav tabs -->
           <div class="nav-content">
             <ul class="tabs tabs-transparent">
               <li class="tab"><a href="#chat-section" class="purple-text text-lighten-5">Medical Chat</a></li>
               <li class="tab"><a href="#results-section" class="purple-text text-lighten-5">Latest Results</a></li>
+              <li class="tab right"><a href="#settings-section" class="purple-text text-lighten-5"><i class="material-icons">settings</i></a></li>
             </ul>
           </div>
           <!-- /.nav tabs -->
-
-
         </nav>                                     
       </div>
     </header>
 
+
     <main>
+      <!-- sign-in modal -->
       <div id="sign-in-modal" class="modal">
         <div class="modal-content">
           <h4 class="purple-text text-darken-4">Welcome to WCC Medical Translation Chat</h4>
@@ -59,9 +57,11 @@
           <a href="#" class="modal-action waves-effect waves-green purple-text text-darken-1 btn-flat sign-in">Sign In</a>
         </div>
       </div>
-      <div class="container">
+      <!-- /.sign-in modal -->
 
-        <!-- row -->
+      <!-- main content -->
+      <div class="container">
+        <!-- row chat section-->
         <div class="row" id="chat-section">
           <div class="col m4">
             <div class="users-list collection with-header">
@@ -76,11 +76,7 @@
               </li>
             </ul>
             <div class="row">
-              <div class="input-field col m2">
-                <select class="lang-select"></select>
-                <label>Language</label>
-              </div>
-              <div class="message-field input-field col m10">
+              <div class="message-field input-field col m12">
                 <i class="material-icons prefix">mode_edit</i>
                 <textarea id="icon_prefix2" class="chat-input materialize-textarea"></textarea>
                 <label class="chat-label" for="icon_prefix2">Message</label>
@@ -93,9 +89,8 @@
             </div>
           </div>
         </div>
-        <!-- /.row -->
-        
-        <!-- row -->
+        <!-- /.row chat section-->
+        <!-- row results section-->
         <div class="row" id="results-section">
           <div class="col m3">
             <div class="card horizontal">
@@ -133,22 +128,68 @@
             </div>
           </div>
         </div>
-        <!-- /.row -->
-
+        <!-- /.row results section-->
+        <!-- row settings section-->
+        <div class="row" id="settings-section">
+          <div class="col m12">
+            <!-- subrow user account -->
+            <div class="row">
+              <div class="col m12">
+                <h5>Your Account</h5>
+                <!-- account info name -->
+                <div class="row">
+                  <div class="col offset-m1 m1">
+                    <p class="purple-text text-darken-4">Name</p>
+                  </div>
+                  <div class="col m2">
+                    <p class="curr-user-name"></span></p>
+                  </div>
+                </div>
+                <!-- /.account info name -->
+                <!-- account info user since -->
+                <div class="row">
+                  <div class="col offset-m1 m1">
+                    <p class="purple-text text-darken-4">Email</p>
+                  </div>
+                  <div class="col m2">
+                    <p class="curr-user-email"></span></p>
+                  </div>
+                </div>
+                <!-- /.account info user since -->
+              </div>
+            </div>
+            <!-- /.subrow user account -->
+            <!-- subrow chat language -->
+            <div class="row">
+            <h5>Chat Language</h5>
+              <div class="col m5">
+                <div class="input-field">
+                  <p>Medical Chat will automatically translate messages received into this language</p>
+                </div>
+              </div>
+              <div class="col m3">
+                <label>Language</label>
+                <select class="lang-select"></select>
+              </div>
+            </div>
+            <!-- /.subrow chat language-->
+          </div>
+        </div>
+        <!-- /.row settings section-->
       </div>
+      <!-- /.main content -->
     </main>
+
   
     <footer class="page-footer grey darken-4">
       <div class="container">
-        <!-- row -->
+        <!-- row footer content -->
         <div class="row">
           <div class="col l6 s12">
-
           <!-- WCC logo -->
           <a id = "logo" href="#" class="brand-logo"><img class="brand-img responsive-img grey darken-2" src="assets/img/wcc-new-resized_p.png">
           </div>
           <!-- /.WCC logo -->
-          
           <!-- footer links -->
           <div class="footer-links grey darken-3 col l3 offset-l3 s12">
             <h5 class="purple-text text-lighten-5">WCC Patient Access</h5>
@@ -161,19 +202,17 @@
             </ul>
           </div>
           <!-- /.footer links -->
-
         </div>
       </div>
-      <!-- /.row -->
-
-      <!-- copyright -->
+      <!-- /.row footer content -->
+      <!-- footer copyright section -->
       <div class="footer-copyright grey darken-3 grey-text text-lighten-1">
         <div class="container">
         © 2017 WCC Health Network
         <a class="grey-text text-lighten-1 right" href="#!">WCC MyChart Patient Records</a>
         </div>
       </div>
-      <!-- /.copyright -->
+      <!-- /.copyright section -->
     </footer>
     
     <script type="text/javascript">
