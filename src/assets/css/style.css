@@ -102,34 +102,15 @@ main h5{
 }
 
 /*chat containers/sections*/
-.chatbox {
+.chat-messages-content {
+  max-height: 400px;
+  overflow: scroll;
 }
-.chat-history {  
-}
-.chat-message {
-}
-.chat-message-body {
-}
-.chat-message-timestamp {
-  float: right;
-}
-
-.message-field {
-  margin: 0 !important;
-}
-.chat-input {
-  width: 500px;
-}
-
-.chat-input:focus {
+.chat-message img {
 
 }
-.chat-submit {
-}
 
-.message-field label {
- color: #000;
-}
+/*chat input*/
 /* label focus color */
 .chat-input:focus + label {
  color: var(--bright-color);
