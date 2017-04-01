@@ -509,9 +509,9 @@ var display = {
     let newAvatarItem = $(`
       <li class="chat-message collection-item avatar">
         <img src=${senderPhotoURL} alt="sender_photo" class="circle">
-        <span class="title">${senderName}</span>
+        <span class="title grey-text">${senderName}</span>
         <p>${messageText}</p>
-        <div class="chat-message-timestamp secondary-content">${messageTimestamp}</div>
+        <div class="chat-message-timestamp secondary-content purple-text text-darken-2">${messageTimestamp}</div>
       </li>
     `);
 
