@@ -28,16 +28,12 @@ var googleAuth = {
   */
   signInWithPopup: function() {
     firebase.auth().signInWithPopup(provider).then(function(result) {
+      // most of the work is being done in the .authstatechanged listener so that when the page refreshes it checks the state and will display the appropriate info, set the appropriate appstate phase, etc. 
+
       // This gives you a Google Access Token. You can use it to access the Google API.
-      var token = result.credential.accessToken;
-      // The signed-in user info.
-      var user = result.user;
-      // identify user by id & name throughout the app
-      var name = user.displayName;
-      var uid = user.uid; 
-      var photoURL = user.photoURL
-      // pass user info to database handling
-      users.loginToDatabase(name, uid, photoURL);  
+      // var token = result.credential.accessToken;
+      // // The signed-in user info.
+      // var user = result.user;
     }).catch(function(error) {
       // Handle Errors here.
       var errorCode = error.code;
@@ -46,6 +42,7 @@ var googleAuth = {
       var email = error.email;
       // The firebase.auth.AuthCredential type that was used.
       var credential = error.credential;
+      console.log(error.code + errorMessage);
     });
   },
 
@@ -53,12 +50,11 @@ var googleAuth = {
     * This function signs the current user out via google auth
   */
   signOut: function() {
-    var currUserId = auth.currentUser.uid;
-    users.logoutFromDatabase(currUserId); 
     firebase.auth().signOut().then(function() {
       // Sign-out successful.
     }).catch(function(error) {
       // An error happened.
+      console.log(error)
     });
   }
 };
@@ -68,40 +64,42 @@ var googleAuth = {
 //================
 
 var users = {
-  /**
-    * This function uses firebase .update method to save user information (object) to the firebase database upon login
-    * if existing user with a key matching the uid: updates name and sets status to online
-    * if no existing key in database users matching that uid: adds new user with that uid and sets them to online  
-    * @param {string} name - the user's display name
-    * @param {string} uid - the user's ID 
-  */
-  loginToDatabase: function(name, uid, photoURL) {
-    var updates = {
-      name: name,
-      photoURL: photoURL,
-      online: true
-    };
-   database.ref('/users/' + uid).update(updates); 
-  },
 
   /**
-    * This function uses firebase .update method to set a user's status in the database to 'offline' so they don't appear in the user dropdown  
-    * @param {string} uid - the current user's ID so the matching key can be found in the database and updated 
+    * This function uses firebase .update method to save or update a user's info in the database 
+    * if user logged in :
+      * existing user with a key matching the uid: updates name and sets status to online
+      * if no existing key in database users matching that uid: adds new user with that uid and sets them to online  
+    * if user logged out: updates user to 'offline' 
   */
-  logoutFromDatabase: function(uid) {
-    var updates = { 
-      online: false 
-    };
-    database.ref('/users/' + uid).update(updates);
+
+
+  updateUserInDatabase: function() {
+    var updatedUserInfo;
+    switch(appState.phase){
+      case "userSignedIn":
+        updatedUserInfo = {
+          name: appState.currentUser.name,
+          photoURL: appState.currentUser.photoURL,
+          online: true
+        };
+        break;
+      case "userSignedOut":
+        updatedUserInfo = { 
+          online: false 
+        };
+        break;
+    }
+    database.ref('/users/' + appState.currentUser.uid).update(updatedUserInfo); 
   },
 
   /**
     * this function gets the languages of the two users in the conversation, to be passed into the google translate API call 
     * TODO: find out who the second user in the conversation is and look up their lang
   */
-  fetchRecipientLang: function(currUserId, currUserLang, currUserMessage) {
+  fetchRecipientLang: function(currUserLang, currUserMessage) {
     // grab the current convo ID out of the current user's db snapshot 
-    database.ref(`/users/${currUserId}/cId/`).once('value', function(snapshot) {
+    database.ref(`/users/${appState.currentUser.uid}/cId/`).once('value', function(snapshot) {
       let cId = snapshot.val();
       let recipientId;
       // grab snapshot of that conversation from the database
@@ -109,9 +107,9 @@ var users = {
         let userOneId = snapshot.val().userOneId;
         let userTwoId = snapshot.val().userTwoId;
         // recipient is the user in the convo that DOESN'T match the current user
-        if (userOneId === currUserId) {
+        if (userOneId === appState.currentUser.uid) {
           recipientId = userTwoId;
-        } else if (userTwoId === currUserId) {
+        } else if (userTwoId === appState.currentUser.uid) {
           recipientId = userOneId;
         }
 
@@ -139,7 +137,7 @@ var conversations = {
   */
 
   fetchConversation: function(recipientId) {
-    let currUserId = auth.currentUser.uid;
+    let currUserId = appState.currentUser.uid;
     database.ref('/conversations').once('value', function(snapshot) {
       let conversations = snapshot.val();
       let conversationFound = false;
@@ -167,12 +165,9 @@ var conversations = {
   */
   createConversation: function(recipientId) {
     var cId; 
-    // get current user's ID (user1)
-    var currentUserId = auth.currentUser.uid; 
-
     // create a new conversation in the database's conversations node 
     database.ref('/conversations/').push({
-      userOneId:currentUserId, 
+      userOneId:appState.currentUser.uid, 
       userTwoId:recipientId, 
       messages:{}
     }).once('value', function (snapshot){
@@ -180,7 +175,7 @@ var conversations = {
       cId = snapshot.key; 
     });
     // store that as current cId in user1/user2 in database
-    database.ref('/users/' + currentUserId).update({
+    database.ref('/users/' + appState.currentUser.uid).update({
       cId: cId
     });
     // if (currentUserId || recipientId) {
@@ -190,10 +185,9 @@ var conversations = {
 };
 
 var langs = {
-  fetchLangOptions: function() {
-    let currUserId = auth.currentUser.uid; 
+  fetchLangOptions: function() { 
     // fetch user's language from database
-    database.ref(`/users/${currUserId}/lang`).once('value', function(snapshot) {
+    database.ref(`/users/${appState.currentUser.uid}/lang`).once('value', function(snapshot) {
       let currUserLang = snapshot.val();
       // If this is user's first time using application, we will default
       // to the language set in the browser
@@ -233,9 +227,8 @@ var firRead = {
     * get the last 10 messages in the current conversation from firebase and as new messages are added, refresh/get the most recent 10 messages
   */
   getMessagesFromFirebase: function() {
-    let currUserId = auth.currentUser.uid;
     // on login, this function called, so adds listener that does work if cID changes? 
-    database.ref(`/users/${currUserId}/cId/`).on('value', function(snapshot) {
+    database.ref(`/users/${appState.currentUser.uid}/cId/`).on('value', function(snapshot) {
       let cId = snapshot.val();
       database.ref(`/conversations/${cId}/messages`).off();
       database.ref(`/conversations/${cId}/messages`).limitToLast(10).on('child_added', function(childSnapshot) { // single message snapshot
@@ -250,7 +243,7 @@ var firRead = {
     * @param {object} childSnapshot - the message snapshot from firebase (contains: sender, original, translated, timestamp)
   */
   checkSenderRole: function(childSnapshot) {
-    return childSnapshot.val().sender === auth.currentUser.displayName;
+    return childSnapshot.val().sender === appState.currentUser.name;
   },
 
   /**
@@ -259,7 +252,7 @@ var firRead = {
   */
   getUsersFromFirebase: function() { 
     database.ref('/users').on('child_added', function (childSnapshot, childKey){
-      if (childSnapshot.key !== auth.currentUser.uid) {
+      if (childSnapshot.key !== appState.currentUser.uid) {
         display.displayUser(childSnapshot);
       }
     });
@@ -276,9 +269,8 @@ firSend = {
     * @param {object} messageObject - a single message object to add (keys: sender, original, translated, timestamp)
   */
   storeMessageOnFirebase: function(messageObject) {
-    let currUserId = auth.currentUser.uid;
     let cId; 
-    database.ref(`/users/${currUserId}/cId/`).once('value', function(snapshot) {
+    database.ref(`/users/${appState.currentUser.uid}/cId/`).once('value', function(snapshot) {
       cId = snapshot.val();
     });
     database.ref(`conversations/${cId}/messages`).push(messageObject);
@@ -320,11 +312,9 @@ var translation = {
   */
   handleTranslateResponse: function(translatedText, originalText) {
     var timestamp = moment().utc().format();
-    var userName = auth.currentUser.displayName;
-    var userPhoto = auth.currentUser.photoURL;
     var messageObject = {
-      sender: userName,
-      senderPhoto: userPhoto,
+      sender: appState.currentUser.name,
+      senderPhoto: appState.currentUser.photoURL,
       original: originalText,
       translation: translatedText,
       timestamp: timestamp // TODO: use this in display
@@ -344,8 +334,7 @@ var translation = {
 // user's new language will be saved to database
 $('.lang-select').on('change', function(res) {
   let newLang = $('.lang-option:selected').val();
-  let currUserId = auth.currentUser.uid;
-  database.ref(`/users/${currUserId}/`).update({
+  database.ref(`/users/${appState.currentUser.uid}/`).update({
     lang: newLang
   });
 });
@@ -355,30 +344,30 @@ $('.lang-select').on('change', function(res) {
   * used to persist user's login information on the page even when page refreshed 
   * @param {object} user - a snapshot of the auth current user. 
 */
-firebase.auth().onAuthStateChanged(function(user) {
-  if (user) {
-    // if signed in: display user info  
-    var userName = user.displayName;
-    var profilePicUrl = user.photoURL;
-    var email = user.email;
-    $('.curr-user-name').html(userName);
-    $('.curr-user-photo').html(`<img src=${profilePicUrl}></img>`);
-    $('.curr-user-email').html(email);
-    $('#sign-in-modal').modal('close');
-    $('.chat-message').remove();
-    $('.chat-user').remove();
-    $('.sign-out').removeClass('hide');
+firebase.auth().onAuthStateChanged(function(currentUser) {
+  if (currentUser) {
+    appState.phase = "userSignedIn";
+;    // if signed in: save user info to appState 
+    appState.currentUser = {
+      'uid': currentUser.uid,
+      'name': currentUser.displayName,
+      'photoURL': currentUser.photoURL,
+      'email': currentUser.email
+    } 
+    // add/update user info to database 
+    users.updateUserInDatabase();  
+    // display user info in various places on page
+    display.refreshDisplay();
+    // load other users, messages, languages
     firRead.getUsersFromFirebase();
     firRead.getMessagesFromFirebase();
     langs.fetchLangOptions();
   } else {
+    appState.phase = "userSignedOut";
+    users.updateUserInDatabase(); 
+    appState.currentUser = {};
     // No user is signed in.
-    display.initializeSignInModal();
-    // keep from duplicating the dynamically created dropdown elements when re-created on next sign-in
-    $('select').material_select('destroy'); 
-    $('.curr-user-name').html('');
-    $('.curr-user-photo').html('');
-    $('.sign-out').addClass('hide');
+    display.refreshDisplay();
   }
 });
 
@@ -392,12 +381,11 @@ $('.chat-submit').on('click', function() {
   event.preventDefault();
   if (auth.currentUser) {
     var userInput = $('.chat-input').val().trim();
-    let currUserId = auth.currentUser.uid;
-    let userLang;
-    database.ref(`/users/${currUserId}/lang`).once('value', function(snapshot) {
-      userLang = snapshot.val();
+    let currUserLang;
+    database.ref(`/users/${appState.currentUser.uid}/lang`).once('value', function(snapshot) {
+      currUserLang = snapshot.val();
     });
-    users.fetchRecipientLang(currUserId, userLang, userInput);
+    users.fetchRecipientLang(currUserLang, userInput);
   } 
 });
 
@@ -550,6 +538,30 @@ var display = {
         ${lang.toUpperCase()}
       </option>
     `);
+  }, 
+
+  refreshDisplay: function() {
+    switch(appState.phase) {
+      case "initialize":
+        break;
+      case "userSignedIn":
+        $('.curr-user-name').html(appState.currentUser.name);
+        $('.curr-user-photo').html(`<img src=${appState.currentUser.photoURL}></img>`);
+        $('.curr-user-email').html(appState.currentUser.email);
+        $('#sign-in-modal').modal('close');
+        $('.chat-message').remove();
+        $('.chat-user').remove();
+        $('.sign-out').removeClass('hide');
+        break;
+      case "userSignedOut": 
+        display.initializeSignInModal();
+        // keep from duplicating the dynamically created dropdown elements when re-created on next sign-in
+        $('select').material_select('destroy'); 
+        $('.curr-user-name').html('');
+        $('.curr-user-photo').html('');
+        $('.sign-out').addClass('hide');
+        break;
+    }
   }
 };
 
@@ -557,11 +569,15 @@ var display = {
 // INITIALIZE APP
 //=================
  
-/*
-function initializeApp() {
-  appState = resetAppState();
-}
-*/
+var appState = {
+  "phase": "initialize",
+  // initialize, userSignedIn, userSignedOut
+  "currentUser": {}
+};
 
-//initializeApp();
+// function initializeApp() {
+//   appState = resetAppState();
+// }
+
+// initializeApp();
 });
